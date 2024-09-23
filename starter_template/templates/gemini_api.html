@@ -1,0 +1,17 @@
+
+
+<h1>
+    Create Something
+
+
+</h1>
+
+<form method="POST" action="{% url 'api_caller' %}"
+<input type="text" placeholder="ENTER THE QUESTION TO BE ASKED" name="question">
+<button type="submit    " action="">  CLICK HERE TO GENERATE AN RESPONSE </button>
+</form>
+{% if response %}
+    
+    <h1>{{response}}</h1>
+    {% endfor %}
+{% endif %}
