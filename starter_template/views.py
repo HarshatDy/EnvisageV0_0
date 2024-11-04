@@ -1,66 +1,37 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
 import os
+import openai
+from . import openai_api as api, file_operations as fo 
 
-import google.generativeai as genai
+# For managing generated pages
+generated_pages = []
 
-# Create your views here.
-def home(request):
-    return render(request,'gemini_api.html')
+def homepage(request):
+    return render(request, 'homepage.html', {'pages': generated_pages})
 
 
-def api_call(request):
-    """
-    Install the Google AI Python SDK
 
-    $ pip install google-generativeai
 
-    See the getting started guide for more information:
-    https://ai.google.dev/gemini-api/docs/get-started/python
-    """
+def get_page(request):
 
-    genai.configure(api_key=os.environ["AIzaSyAC_PZyeCxpVyVsIKAGOGrTDT5ko3Kpvh0"])
+    page_name = request.POST.get('page_name')
 
-    generation_config = {
-    "temperature": 1,
-    "top_p": 0.95,
-    "top_k": 64,
-    "max_output_tokens": 8192,
-    "response_mime_type": "text/plain",
-    }
-    safety_settings = [
-    {
-        "category": "HARM_CATEGORY_HARASSMENT",
-        "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-    },
-    {
-        "category": "HARM_CATEGORY_HATE_SPEECH",
-        "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-    },
-    {
-        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-        "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-    },
-    {
-        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-        "threshold": "BLOCK_MEDIUM_AND_ABOVE",
-    },
-    ]
+    # Get the page name from the request #### TODO : make this available from openai api
+    content="Create an HTML page with the title '{page_name}' and content 'Envisage - Creativity Meets Technology' in a sleek design."
+    content = api.openai_api_request(content)
+    # print(content.data[0].content[0].text.value) ## print the content of the output form openai API.
+    
+    path = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(path, "templates")
+    
+    # filename  = request.GET.get('page_name') ## Get the content from POST request.
+    # print(f"{path} {page_name} THIS IS THE OUTPUT PUT") ## print the file directory and the file name
 
-    model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash-latest",
-    safety_settings=safety_settings,
-    generation_config=generation_config,
-    )
+    fo.create_file(path, page_name)
+    fo.write_file(path, page_name, content.data[0].content[0].text.value)
 
-    chat_session = model.start_chat(
-    history=[
-    ]
-    )
+    generated_pages.append(page_name+".html")
 
-    response = chat_session.send_message(request.POST.question)
+    return redirect('homepage')
 
-    print(response.text)
-    print(chat_session.history)
-
-    return render('request','gemini_api.html', {'response':response.text})

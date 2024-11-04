@@ -13,34 +13,54 @@ client=OpenAI(
     api_key=os.getenv('OPENAI_API_KEY')
 )
 
-print(client.project)
+# print(client.project)
 
-def main()->None:
+# def main()->None:
     
-    list_assistant()
+#     list_assistant()
     
-    thread=client.beta.threads.create()
+#     thread=client.beta.threads.create()
 
+#     message = client.beta.threads.messages.create(
+#         thread_id=thread.id,
+#         role="user",
+#         content="Create an HTML page with the title '{page_name}' and content 'Envisage - Creativity Meets Technology' in a sleek design."
+#     )  
+
+#     run = client.beta.threads.runs.create(
+#         thread_id=thread.id,
+#         assistant_id='asst_GLoqwMMQjih3ziyj8LQCrcAf',
+#     )
+#     print(run)
+
+#     run = wait_on_run(run,thread)
+#     print(run)
+
+
+#     messages=client.beta.threads.messages.list(
+#         thread_id=thread.id, order='asc', after=message.id,
+#     )
+#     print(messages)
+
+
+def openai_api_request(txt):
+
+    thread= client.beta.threads.create()
     message = client.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
-        content="Create an HTML page with the title '{page_name}' and content 'Envisage - Creativity Meets Technology' in a sleek design."
-    )  
-
+        content=txt
+    )
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
         assistant_id='asst_GLoqwMMQjih3ziyj8LQCrcAf',
     )
-    print(run)
-
     run = wait_on_run(run,thread)
-    print(run)
-
 
     messages=client.beta.threads.messages.list(
         thread_id=thread.id, order='asc', after=message.id,
     )
-    print(messages)
+    return messages
 
 
 
@@ -100,6 +120,5 @@ def list_assistant():
     print(my_assistant.data)
 
 
-
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
