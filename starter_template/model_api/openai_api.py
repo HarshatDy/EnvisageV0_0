@@ -13,64 +13,57 @@ client=OpenAI(
     api_key=os.getenv('OPENAI_API_KEY')
 )
 
-# print(client.project)
+print(os.getenv('PROJ'))
 
-# def main()->None:
-    
-#     list_assistant()
-    
-#     thread=client.beta.threads.create()
-
-#     message = client.beta.threads.messages.create(
-#         thread_id=thread.id,
-#         role="user",
-#         content="Create an HTML page with the title '{page_name}' and content 'Envisage - Creativity Meets Technology' in a sleek design."
-#     )  
-
-#     run = client.beta.threads.runs.create(
-#         thread_id=thread.id,
-#         assistant_id='asst_GLoqwMMQjih3ziyj8LQCrcAf',
-#     )
-#     print(run)
-
-#     run = wait_on_run(run,thread)
-#     print(run)
-
-
-#     messages=client.beta.threads.messages.list(
-#         thread_id=thread.id, order='asc', after=message.id,
-#     )
-#     print(messages)
 
 
 def openai_api_request(txt):
+    thread = client.beta.threads.create()
+    print(f"Thread created: {thread.id}")  # Debugging line
 
-    thread= client.beta.threads.create()
     message = client.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
         content=txt
     )
+    print(f"Message created: {message.id}")  # Debugging line
+
     run = client.beta.threads.runs.create(
         thread_id=thread.id,
-        assistant_id='asst_GLoqwMMQjih3ziyj8LQCrcAf',
+        assistant_id='asst_WqxlAhEY2ktg9mj5fGHqvNaq',
     )
-    run = wait_on_run(run,thread)
+    print(f"Run created: {run.id}")  # Debugging line
 
-    messages=client.beta.threads.messages.list(
+    run = wait_on_run(run, thread)
+    
+    if run.status == 'requires_action':
+        print(f"Tool name {run.tools[1].function.name}")
+        # print(f"Tool id {run.tools[1].function}")
+        run = client.beta.threads.runs.submit_tool_outputs(
+            thread_id=thread.id,
+            run_id=run.id,
+            tool_outputs=[{"tool_call_id": tool.id, "output": "true"} for tool in run.tools]
+        )
+
+        print(f"Run requires action: {run}")  # Debugging line
+
+    messages = client.beta.threads.messages.list(
         thread_id=thread.id, order='asc', after=message.id,
     )
+    print(f"Messages: {messages}")  # Debugging line
     return messages
 
 
 
 def wait_on_run(run,thread):
     while run.status=='queued' or run.status=='in_progress':
+        print(f"Run status: {run.status}")  # Debugging line
         run = client.beta.threads.runs.retrieve(
             thread_id=thread.id,
             run_id=run.id,
         )
         time.sleep(0.5)
+    print(f"Run status after completion: {run.status}")  # Debugging line
     return run
     
 
@@ -120,5 +113,38 @@ def list_assistant():
     print(my_assistant.data)
 
 
-# if __name__ == "__main__":
-#     main()
+
+
+# def chat_with_function_calling(user_message: str):
+
+#     response = client.ChatCompletion.create(
+#         model="gpt-4-turbo",
+#         messages=[{"role": "user", "content": user_message}],
+#         functions=functions,
+#         function_call="auto",
+#     )
+
+#     response_message = response["choices"][0]["message"]
+
+#     if response_message.get("function_call"):
+#         function_name = response_message["function_call"]["name"]
+#         function_args = json.loads(response_message["function_call"]["arguments"])
+#         if function_name == "fetch_web_data":
+#             function_response = fetch_web_data(**function_args)
+#             return function_response
+    
+#     return response_message["content"]
+
+# # Example usage
+# print(chat_with_function_calling("Get data from https://www.moneycontrol.com/technology/what-is-googleyness-google-ceo-sundar-pichai-finally-explains-what-it-means-for-company-article-12895142.html"))
+
+
+
+def get_todays_news() -> None:
+    response = openai_api_request("Get today's news from google")
+    if response:
+        print(response)
+    else:
+        print("Failed to get news")
+
+get_todays_news()

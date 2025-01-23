@@ -2,9 +2,9 @@
 *.pyc
 __pychache__/
 
-
 #env
 *.env
+starter_template/pass.env
 
 #additional
 *.log
