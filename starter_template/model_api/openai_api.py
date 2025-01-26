@@ -18,39 +18,51 @@ print(os.getenv('PROJ'))
 
 
 def openai_api_request(txt):
-    thread = client.beta.threads.create()
-    print(f"Thread created: {thread.id}")  # Debugging line
+    """
+    Sends a request to the OpenAI API and processes the response.
 
-    message = client.beta.threads.messages.create(
+    This function creates a new thread, sends a message to the thread, initiates a run,
+    waits for the run to complete, and handles any required actions. Finally, it retrieves
+    and returns the list of messages from the thread.
+
+    Args:
+        txt (str): The content of the message to be sent to the OpenAI API.
+
+    Returns:
+        list: A list of messages from the thread after processing the run.
+
+    Raises:
+        Exception: If there is an error in creating the thread, message, or run, or if the run
+                   requires an action that cannot be completed.
+    """
+
+    thread = client.beta.threads.create()  # Create a new thread
+    # print(f"Thread created: {thread.id}")  # Debugging line
+    message = client.beta.threads.messages.create(  # Create a new message in the thread
         thread_id=thread.id,
         role="user",
         content=txt
     )
-    print(f"Message created: {message.id}")  # Debugging line
-
-    run = client.beta.threads.runs.create(
+    # print(f"Message created: {message.id}")  # Debugging line
+    run = client.beta.threads.runs.create(  # Create a new run in the thread
         thread_id=thread.id,
         assistant_id='asst_WqxlAhEY2ktg9mj5fGHqvNaq',
     )
-    print(f"Run created: {run.id}")  # Debugging line
-
+    # print(f"Run created: {run.id}")  # Debugging line
     run = wait_on_run(run, thread)
-    
-    if run.status == 'requires_action':
-        print(f"Tool name {run.tools[1].function.name}")
-        # print(f"Tool id {run.tools[1].function}")
+    if run.status == 'requires_action':  # Handle required actions if the run status is 'requires_action'
+        print(f"Tool name {run.required_action.submit_tool_outputs.tool_calls[0].id}")  # Debugging line
         run = client.beta.threads.runs.submit_tool_outputs(
             thread_id=thread.id,
             run_id=run.id,
-            tool_outputs=[{"tool_call_id": tool.id, "output": "true"} for tool in run.tools]
+            tool_outputs=[{"tool_call_id": run.required_action.submit_tool_outputs.tool_calls[0].id, "output": "true"}]
         )
-
-        print(f"Run requires action: {run}")  # Debugging line
-
+        wait_on_run(run, thread)  # Wait for the run to complete
+        print(f"FINAL Run requires action: {run.status}")  # Debugging line
     messages = client.beta.threads.messages.list(
         thread_id=thread.id, order='asc', after=message.id,
     )
-    print(f"Messages: {messages}")  # Debugging line
+    # print(f"Messages: {messages}")  # Debugging line
     return messages
 
 
@@ -66,44 +78,6 @@ def wait_on_run(run,thread):
     print(f"Run status after completion: {run.status}")  # Debugging line
     return run
     
-
-###########################
-## Streaming the output using Event handler
-###########################
-# class EventHandler(AssistantEventHandler):
-#     @override
-#     def on_text_created(self,text)->None:
-#         print(f"\nAssistant", end="", flush=true)
-
-#     @override
-#     def on_text_delta(self, delta, snapshot):
-#         print(delta.value, end="", flush=True)
-
-#     def on_tool_call_created(self, tool_call):
-#         print(f"asssistant > {tool.call.type}\n", flush=True)
-
-#     def on_tool_call_delta(self, delta, snapshot):
-#         if delta.type == 'code_interpreter':
-#             if delta.code_interpreter.input:
-#                 print(delta.code_interpreter.input, end="", flush=True)
-#             if delta.code_interpreter.outputs:
-#                 print(f"\n\noutput >", flush=True)
-#                 for output in delta.code_interpreter.outputs:
-#                     if output.type == "logs":
-#                         print(f"\n{output.logs}", flush=True)
-
-
-###########################
-## Logic to run the stream
-###########################
-# with client.beta.threads.run.stream(
-#     thread_id=thread.id,
-#     assistant_id=assistant.id,
-#     instructions="Please address the user as Jane Doe. The user has a premium account.",
-#     event_handler=EventHandler(),
-# ) as stream:
-#     stream.until_done()
-
 
 def list_assistant():
     my_assistant= client.beta.assistants.list(
@@ -141,9 +115,9 @@ def list_assistant():
 
 
 def get_todays_news() -> None:
-    response = openai_api_request("Get today's news from google")
+    response = openai_api_request("Get today's news from google news")
     if response:
-        print(response)
+        print(response.data[0].content[0].text.value)
     else:
         print("Failed to get news")
 
