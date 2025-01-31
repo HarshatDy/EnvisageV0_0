@@ -16,6 +16,42 @@ client=OpenAI(
 print(os.getenv('PROJ'))
 
 
+news_sources = {
+    "Climate Technology": [
+        "https://www.climatechangenews.com/",
+        "https://insideclimatenews.org/",
+        "https://www.technologyreview.com/topic/climate-change/",
+        "https://www.bloomberg.com/green",
+        "https://www.theguardian.com/environment/climate-crisis"
+    ],
+    "Government Politics": [
+        "https://www.politico.com/news/climate-energy",
+        "https://www.bbc.com/news/politics",
+        "https://www.reuters.com/business/environment/",
+        "https://www.nytimes.com/section/climate",
+        "https://www.ft.com/climate-capitalism",
+        "https://www.eenews.net/"
+    ],
+    "Travel Industry": [
+        "https://skift.com/",
+        "https://www.cnbc.com/travel/",
+        "https://www.travelweekly.com/",
+        "https://www.cntraveler.com/story-type/news",
+        "https://www.iata.org/en/pressroom/",
+        "https://www.phocuswire.com/"
+    ],
+    "Stock Market": [
+        "https://www.bloomberg.com/markets",
+        "https://www.ft.com/markets",
+        "https://www.cnbc.com/markets/",
+        "https://www.wsj.com/market-data",
+        "https://www.marketwatch.com/investing/esg",
+        "https://www.morningstar.com/lp/sustainable-investing"
+    ]
+}
+
+
+
 
 def openai_api_request(txt):
     """
@@ -50,7 +86,7 @@ def openai_api_request(txt):
     )
     # print(f"Run created: {run.id}")  # Debugging line
     run = wait_on_run(run, thread)
-    if run.status == 'requires_action':  # Handle required actions if the run status is 'requires_action'
+    while run.status == 'requires_action':  # Handle required actions if the run status is 'requires_action'
         print(f"Tool name {run.required_action.submit_tool_outputs.tool_calls[0].id}")  # Debugging line
         run = client.beta.threads.runs.submit_tool_outputs(
             thread_id=thread.id,
@@ -112,13 +148,21 @@ def list_assistant():
 # # Example usage
 # print(chat_with_function_calling("Get data from https://www.moneycontrol.com/technology/what-is-googleyness-google-ceo-sundar-pichai-finally-explains-what-it-means-for-company-article-12895142.html"))
 
-
+new_list = []
 
 def get_todays_news() -> None:
-    response = openai_api_request("Get today's news from google news")
-    if response:
-        print(response.data[0].content[0].text.value)
-    else:
-        print("Failed to get news")
+    for key in news_sources:
+        print(f"News for {key}")
+        for source in news_sources[key]:
+            print(f"Getting news from {source}")
+            response = openai_api_request(f"Get today's news from {source} in 350 words")
+            if response:
+                new_list.append(response.data[0].content[0].text.value)
+                print(response.data[0].content[0].text.value)
+            else:
+                print("Failed to get news")
+        print("\n\n")
+    print("News retrieval complete")
 
-get_todays_news()
+
+# get_todays_news()
