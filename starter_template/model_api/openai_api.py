@@ -4,6 +4,9 @@ import json
 import time
 from dotenv import load_dotenv
 from web_scrapper_api import get_links_and_content_from_page
+from mongo import db
+from datetime import datetime
+
 
 
 
@@ -170,6 +173,7 @@ def get_todays_news() -> None:
 
 # get_todays_news()
 links={}
+openai_links_db = db['openai_api']
 
 for key in news_sources:
     print(f"News for {key}")
@@ -185,6 +189,8 @@ for key in news_sources:
     print("--------------------------------------------")
     print(links)
     print("--------------------------------------------")
+    today_date = datetime.today().strftime('%Y-%m-%d')
+    openai_links_db.insert_one({today_date: links})
 print("News retrieval complete")
 
 print(links)

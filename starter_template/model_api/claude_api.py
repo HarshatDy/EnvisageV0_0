@@ -2,6 +2,8 @@ import anthropic
 from dotenv import load_dotenv
 import os
 from web_scrapper_api import get_links_and_content_from_page
+from mongo import db
+from datetime import datetime
 
 
 
@@ -112,11 +114,12 @@ news_sources = {
 }
 
 # # Example of how to access the lists:
-links={}
+claude_links_db = db['claude_api']
 
 for key in news_sources:
     print(f"News for {key}")
     for source in news_sources[key]:
+        links={}
         print(f"Getting news from {source}")
         for source in news_sources[key][source]:
             try:
@@ -126,6 +129,8 @@ for key in news_sources:
                 print(f"Failed to extract news from {source} with error: {e}")
                 print("*****************************************************")
         print("\n\n")
+        today = datetime.today().strftime('%Y-%m-%d')
+        claude_links_db.insert_one({today:links})
         print("--------------------------------------------")
         print(links)
         print("--------------------------------------------")
