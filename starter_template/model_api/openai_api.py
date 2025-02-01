@@ -3,6 +3,7 @@ import os
 import json
 import time
 from dotenv import load_dotenv
+from web_scrapper_api import get_links_and_content_from_page
 
 
 
@@ -165,4 +166,36 @@ def get_todays_news() -> None:
     print("News retrieval complete")
 
 
+
+
 # get_todays_news()
+links={}
+
+for key in news_sources:
+    print(f"News for {key}")
+    for source in news_sources[key]:
+        print(f"Getting news from {source}")
+        try:
+            links[source] = get_links_and_content_from_page(source)
+        except Exception as e:
+            print("************************ERROR************************")
+            print(f"Failed to extract news from {source} with error: {e}")
+            print("*****************************************************")
+    print("\n\n")
+    print("--------------------------------------------")
+    print(links)
+    print("--------------------------------------------")
+print("News retrieval complete")
+
+print(links)
+exit()
+
+for key in links:
+    print(f"Content from {key}")
+    for link in links[key]:
+        print(f"Title: {links[key][link][0]}")
+        print(f"Content: {links[key][link][1]}")
+        content = openai_api_request(f"Summarize the news from {link} with the title {links[key][link][0]} and content {links[key][link][1]}")
+        print("Summary:")
+        print(content.data[0].content[0].text.value)
+    print("\n\n")

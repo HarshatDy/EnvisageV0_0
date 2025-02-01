@@ -1,21 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
-from openai_api import news_sources
+# from openai_api import news_sources
 from urllib.parse import urljoin
 from typing import List, Set
 
 
-def get_links_from_page(url: str) -> dict:
+def get_links_and_content_from_page(url: str) -> dict:
     response = requests.get(url, timeout=10) # added timeout for better performance
     response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
     # print(response.text)
     links= extract_links_from_html(response.text, url)
-    print(links)
+    # print(links)
     content = {}
     for link in links:
         print(f"Extracting content from {link}")
         content[link] = extract_news_content(link)
-    print(content)
+    # print(content)
     return content
 
 
@@ -73,11 +73,11 @@ def extract_links_from_html(html_content: str, base_url: str) -> List[str]:
     return links
 
 
-if __name__ == '__main__':
-   for url in news_sources["Climate Technology"]:
-       print(f"Extracting content from {url}")
-       list = get_links_from_page(url)
-       print(list)
+# if __name__ == '__main__':
+#    for url in news_sources["Climate Technology"]:
+#        print(f"Extracting content from {url}")
+#        list = get_links_from_page(url)
+#        print(list)
     #    print(f"Title: {title}\nBody: {body}\n")
 #    news_url = input("Enter news article URL: ")
 #    title, body = extract_news_content(news_url)
