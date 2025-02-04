@@ -1,0 +1,30 @@
+// Delete single document with today's date
+let today = new Date().toISOString().split('T')[0];
+db.openai_api.deleteOne({ [today]: { $exists: true } })
+
+// Delete multiple documents with today's date
+db.openai_api.deleteMany({ [today]: { $exists: true } })
+
+// Delete all documents in collection
+db.openai_api.deleteMany({})
+
+// Delete documents older than specific date
+db.openai_api.deleteMany({
+    "date": {
+        $lt: ISODate("2024-03-01")
+    }
+})
+
+
+
+// Get today's date in YYYY-MM-DD format
+let today = new Date().toISOString().split('T')[0];
+
+// Query documents where today's date exists as a field
+db.openai_api.find({ [today]: { $exists: true } })
+
+// For specific date
+db.openai_api.find({ "2024-03-25": { $exists: true } })
+
+// Count documents
+db.openai_api.count({ [today]: { $exists: true } })

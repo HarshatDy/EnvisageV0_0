@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from web_scrapper_api import get_links_and_content_from_page
 from mongo import db
 from datetime import datetime
+import threading
 
 
 
@@ -91,7 +92,7 @@ def openai_api_request(txt):
     # print(f"Run created: {run.id}")  # Debugging line
     run = wait_on_run(run, thread)
     while run.status == 'requires_action':  # Handle required actions if the run status is 'requires_action'
-        print(f"Tool name {run.required_action.submit_tool_outputs.tool_calls[0].id}")  # Debugging line
+        # print(f"Tool name {run.required_action.submit_tool_outputs.tool_calls[0].id}")  # Debugging line
         run = client.beta.threads.runs.submit_tool_outputs(
             thread_id=thread.id,
             run_id=run.id,
@@ -109,7 +110,7 @@ def openai_api_request(txt):
 
 def wait_on_run(run,thread):
     while run.status=='queued' or run.status=='in_progress':
-        print(f"Run status: {run.status}")  # Debugging line
+        # print(f"Run status: {run.status}")  # Debugging line
         run = client.beta.threads.runs.retrieve(
             thread_id=thread.id,
             run_id=run.id,
@@ -152,56 +153,149 @@ def list_assistant():
 # # Example usage
 # print(chat_with_function_calling("Get data from https://www.moneycontrol.com/technology/what-is-googleyness-google-ceo-sundar-pichai-finally-explains-what-it-means-for-company-article-12895142.html"))
 
-new_list = []
 
-def get_todays_news() -> None:
+# new_list = []
+
+# def get_todays_news() -> None:
+#     for key in news_sources:
+#         print(f"News for {key}")
+#         for source in news_sources[key]:
+#             print(f"Getting news from {source}")
+#             response = openai_api_request(f"Get today's news from {source} in 350 words")
+#             if response:
+#                 new_list.append(response.data[0].content[0].text.value)
+#                 print(response.data[0].content[0].text.value)
+#             else:
+#                 print("Failed to get news")
+#         print("\n\n")
+#     print("News retrieval complete")
+# get_todays_news()
+
+def start_openai_assistant()-> None:
+    openai_links_db = db['openai_api']
     for key in news_sources:
+        links={}
         print(f"News for {key}")
         for source in news_sources[key]:
-            print(f"Getting news from {source}")
-            response = openai_api_request(f"Get today's news from {source} in 350 words")
-            if response:
-                new_list.append(response.data[0].content[0].text.value)
-                print(response.data[0].content[0].text.value)
-            else:
-                print("Failed to get news")
+            # print(f"Getting news from {source}")
+            try:
+                links[source] = get_links_and_content_from_page(source)
+            except Exception as e:
+                print("************************ERROR************************")
+                print(f"Failed to extract news from {source} with error: {e}")
+                print("*****************************************************")
         print("\n\n")
+        print("--------------------------------------------")
+        # print(links)
+        print("--------------------------------------------")
+        today_date = datetime.today().strftime('%Y-%m-%d')
+        openai_links_db.insert_one({today_date:{key: links}})
     print("News retrieval complete")
+    client.close()
+    # print(links)
+    return None
 
 
+def write_to_file(txt, file_name):
+    try:
+        file_path = os.path.join(os.path.dirname(__file__), file_name)
+        print(f"Writing to file: {file_path}")
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(txt)
+    except Exception as e:
+        print(f"Failed to write to file with error: {e}")
 
-
-# get_todays_news()
-links={}
-openai_links_db = db['openai_api']
-
-for key in news_sources:
-    print(f"News for {key}")
-    for source in news_sources[key]:
-        print(f"Getting news from {source}")
-        try:
-            links[source] = get_links_and_content_from_page(source)
-        except Exception as e:
-            print("************************ERROR************************")
-            print(f"Failed to extract news from {source} with error: {e}")
-            print("*****************************************************")
-    print("\n\n")
-    print("--------------------------------------------")
-    print(links)
-    print("--------------------------------------------")
+def check_news_in_db():
+    openai_links_db = db['openai_api']
     today_date = datetime.today().strftime('%Y-%m-%d')
-    openai_links_db.insert_one({today_date: links})
-print("News retrieval complete")
+    print(today_date)
+    news_data_cursor = openai_links_db.find({today_date: {"$exists": True}})
+    collected_news = {}
+    for news_data in news_data_cursor:
+        # print("News data from DB", news_data)
+        # write_to_file(str(news_data))
+        # print("News data from DB", news_data)
+        print("ITS HERE")
+        for date, categories in news_data.items():
+            # print("This is the date", date)
+            # print(" This is the categories", categories)
+            if date == "_id":
+                continue
+            for category, sources in categories.items():
+                # print("Category", category)
+                # print("Sources", sources)
+                if category not in collected_news:
+                    collected_news[category] = {}
+                for source, content in sources.items():
+                    collected_news[category][source] = content
+    if not collected_news:
+        print("No news data found for today in the database.")
+    return collected_news
 
-print(links)
-exit()
+# print(f" NEWS are present {check_news_in_db()}")
+result = {}
+content = check_news_in_db()
+def process_category(category, sources):
+    for source, content in sources.items():
+        print(f"Processing news from {source} in category {category}")
+        for link, details in content.items():
+            # print(f"LINK from the  news from {link}")
+            # write_to_file(str(details), "details.txt")
+            if len(details) != 2:
+                print(f"Skipping link {link} as it has insufficient details")
+                continue
+            title, news_content = details
+            # exit()
+            summary = openai_api_request(f"Summarize the news from {link} with the title {title} and content {news_content}")
 
-for key in links:
-    print(f"Content from {key}")
-    for link in links[key]:
-        print(f"Title: {links[key][link][0]}")
-        print(f"Content: {links[key][link][1]}")
-        content = openai_api_request(f"Summarize the news from {link} with the title {links[key][link][0]} and content {links[key][link][1]}")
-        print("Summary:")
-        print(content.data[0].content[0].text.value)
-    print("\n\n")
+            print(f"Summary for {link}: {summary.data[0].content[0].text.value}")
+            if category not in result:
+                result[category] = {}
+            if source not in result[category]:
+                result[category][source] = []
+            result[category][source].append({
+                "link": link,
+                "title": title,
+                "content": news_content,
+                "summary": summary.data[0].content[0].text.value
+            })
+            # write_to_file(result, "result.txt")
+
+def run_sumaarizing_threads()-> None:
+    threads = []
+    for category, sources in content.items():
+        thread = threading.Thread(target=process_category, args=(category, sources))
+        threads.append(thread)
+        thread.start()
+        # exit()
+        print("Starting thread")
+        print(f"Starting thread for {category} with {thread.ident}" )
+
+    for thread in threads:
+        thread.join()
+
+
+def push_results_to_db(result):
+    print("Result from OpenAI") 
+    print("CONTENT FROM DB")
+    openai_links_db = db['openai_api']
+    # query = db.openai_links_db.find({ "$and" : [{datetime.today().strftime('%Y-%m-%d'): {"$exists": True}},{"Result":{"$exists": True}}]})
+    # for doc in query:
+    #     print("DOC id ",doc)
+    # write_to_file(str([doc for doc in query]), "query.txt")
+    openai_links_db.insert_one({"Result":{datetime.today().strftime('%Y-%m-%d'): result}})
+
+
+# print("Content from DB" , content)
+
+
+# start_openai_assistant()
+    # for key in links:
+    #     print(f"Content from {key}")
+    #     for link in links[key]:
+    #         print(f"Title: {links[key][link][0]}")
+    #         print(f"Content: {links[key][link][1]}")
+    #         content = openai_api_request(f"Summarize the news from {link} with the title {links[key][link][0]} and content {links[key][link][1]}")
+    #         print("Summary:")
+    #         print(content.data[0].content[0].text.value)
+    #     print("\n\n")

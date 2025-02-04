@@ -15,7 +15,7 @@ def get_links_and_content_from_page(url: str) -> dict:
     for link in links:
         print(f"Extracting content from {link}")
         content[link] = extract_news_content(link)
-    # print(content)
+    print(content)
     return content
 
 

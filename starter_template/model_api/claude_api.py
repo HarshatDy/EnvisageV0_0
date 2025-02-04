@@ -61,9 +61,9 @@ news_sources = {
     "CLIMATE_TECHNOLOGY": {
         "primary_sources": [
             "https://www.bloomberg.com/green",
-            "https://www.carbonbrief.org",
-            "https://www.climatechangenews.com",
-            "https://cleantechnica.com"
+            # "https://www.carbonbrief.org",
+            # "https://www.climatechangenews.com",
+            # "https://cleantechnica.com"
         ],
         "industry_analysis": [
             "https://www.greentechmedia.com",
@@ -114,27 +114,28 @@ news_sources = {
 }
 
 # # Example of how to access the lists:
-claude_links_db = db['claude_api']
 
-for key in news_sources:
-    print(f"News for {key}")
-    for source in news_sources[key]:
-        links={}
-        print(f"Getting news from {source}")
-        for source in news_sources[key][source]:
-            try:
-                links[source] = get_links_and_content_from_page(source)
-            except Exception as e:
-                print("************************ERROR************************")
-                print(f"Failed to extract news from {source} with error: {e}")
-                print("*****************************************************")
-        print("\n\n")
-        today = datetime.today().strftime('%Y-%m-%d')
-        claude_links_db.insert_one({today:links})
-        print("--------------------------------------------")
-        print(links)
-        print("--------------------------------------------")
-    print("News retrieval complete")
+def start_claude_assistant():
+    claude_links_db = db['claude_api']
+    for key in news_sources:
+        # print(f"News for {key}")
+        for sub_source in news_sources[key]:
+            links={}
+            # print(f"Getting news from {sub_source}")
+            for source in news_sources[key][sub_source]:
+                try:
+                    links[source] = get_links_and_content_from_page(source)
+                except Exception as e:
+                    print("************************ERROR************************")
+                    print(f"Failed to extract news from {source} with error: {e}")
+                    print("*****************************************************")
+            print("\n\n")
+            today = datetime.today().strftime('%Y-%m-%d')
+            claude_links_db.insert_one({today:{key:{sub_source:links}}})
+            # print("--------------------------------------------")
+            # print(links)
+            # print("--------------------------------------------")
+        print("News retrieval complete")
 
 
         
