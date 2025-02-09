@@ -1,0 +1,2 @@
+[OPENAI][DBG][11:37:34] Fetching today's results from MongoDB: <pymongo.synchronous.cursor.Cursor object at 0x0000020BACA48440>
+[OPENAI][DBG][11:37:35] Result JSON: None

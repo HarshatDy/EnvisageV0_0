@@ -1,0 +1,333 @@
+[OPENAI][DBG][12:50:11] Checking news for date: 2025-02-09
+[OPENAI][DBG][12:50:12] Found news data in database
+[OPENAI][DBG][12:50:12] Found news data in database
+[OPENAI][DBG][12:50:12] Found news data in database
+[OPENAI][DBG][12:50:12] Found news data in database
+[OPENAI][DBG][12:50:12] Starting thread
+[OPENAI][INF][12:50:12] LINK from the news: https://www.climatechangenews.com/contact-us/
+[OPENAI][DBG][12:50:12] Starting thread for Climate Technology with 21676
+[OPENAI][DBG][12:50:12] Processing summary for https://www.climatechangenews.com/contact-us/ with title: Contact us
+[OPENAI][DBG][12:50:12] Recieved OPENAI request for content Summarize the news from https://www.climatechangenews.com/contact-us/ with the title Contact us and content 
+[OPENAI][DBG][12:50:12] Starting thread
+[OPENAI][INF][12:50:12] LINK from the news: https://www.bbc.com/usingthebbc/cookies/
+[OPENAI][DBG][12:50:12] Starting thread for Government Politics with 36360
+[OPENAI][DBG][12:50:12] Processing summary for https://www.bbc.com/usingthebbc/cookies/ with title: Take control of your cookies
+[OPENAI][DBG][12:50:12] Recieved OPENAI request for content Summarize the news from https://www.bbc.com/usingthebbc/cookies/ with the title Take control of your cookies and content Have a browse to see what we use them for and how you can change your settings to suit you.
+[OPENAI][DBG][12:50:12] Starting thread
+[OPENAI][INF][12:50:12] LINK from the news: https://skift.com/2025/02/06/expedia-is-open-to-ai-partnerships-and-ma/
+[OPENAI][DBG][12:50:12] Starting thread for Travel Industry with 37056
+[OPENAI][DBG][12:50:12] Processing summary for https://skift.com/2025/02/06/expedia-is-open-to-ai-partnerships-and-ma/ with title: Expedia Is Open to AI Partnerships and M&A
+[OPENAI][DBG][12:50:12] Recieved OPENAI request for content Summarize the news from https://skift.com/2025/02/06/expedia-is-open-to-ai-partnerships-and-ma/ with the title Expedia Is Open to AI Partnerships and M&A and content Select a question above or ask something else
+Expedia Group is embracing AI partnerships, especially in its B2B business, to personalize customer experiences and capture new market opportunities. The company is assessing the effectiveness of its One Key loyalty program before expanding it internationally. Recent financial results show growth across Expedia's consumer brands and B2B segment, with notable increases in bookings, net income, and advertising revenue.
+What's Expedia Group's stance on partnership with AI answer engines?
+CEO Ariane Gorin told analysts Thursday that in addition to further personalizing the customer experience on Expedia websites through AI features, the company is open to AI partnerships for its B2B business.
+"Going forward, we'll continue to test and release AI-generated features to further personalize our traveler experience," Gorin said during the company's fourth quarter and full-year earnings call. "AI also opens new possibilities to drive traffic to our brands as consumers increasingly search in new GenAI-native experiences, and we're ensuring that we meet them where they are. And for our B2B business, the AI-native travel startups that will inevitably emerge present new partnership opportunities for us."
+Several travel brands, including Booking.com, Priceline, OpenTable, Tripadvisor, Hipcamp and Uber recently partnered with OpenAI. Expedia brands weren't in the mix, and that issue didn't come up during the call.
+As with online travel companies stance on working with Google Hotels or Google Vacation Rentals, some may forego partnering with the likes of OpenAi, Google's Gemini, or other emerging answer engines. So it wasn't a slam dunk that Expedia would be looking to do so.
+Expedia three main consumer brands, Expedia, Hotels.com and Vrbo, all experienced growth in 2024, as did its B2B and advertising businesses.
+Gorin acknowledged that the company still has work to do to accelerate its Hotels.com and Vrbo vacation rental businesses.
+Still, the company intends to look opportunistically at M&A.
+Scott Schenkel, appearing in his first earnings call as Expedia Group's chief financial officer said:  "Look, I'm coming in new here. But I think any time a company is at our scale and our technology base, we should be in the market and looking at M&A. And I think they've been and will continue to be."
+Gorin said the company has a team focused on deals.
+"Right now, we continue to be focused on running the brands that we have, growing the B2B business, the advertising business and continuing to have strong returns," Gorin said.
+When Expedia Group launched its One Key loyalty program in 2023 under previous CEO Peter Kern, the plan was to roll out the program internationally. One year later, however, Gorin paused One Key's expansion beyond the U.S. and UK.
+She said yesterday that the company's teams are evaluating the impact of the loyalty program and next steps.
+The teams know that One Key has been positive for Expedia and it's been a drag on bookings for Hotels.com," Gorin said.
+Hotels.com had a simple loyalty program that was arguably more attractive for its customers than is One Key.
+Gorin said the company is also assessing the impact of enabling guests to earn One Key cash on virtually all of Vrbo bookings.
+"So we're going to take all of those learnings and then look by brand and geography what we need to do in loyalty, and we'll share more in the year to come," Gorin said.
+All three of Expedia Group's core consumer brands saw bookings growth in the fourth quarter, and as a whole gross bookings climbed 5 points to 9%.
+Gorin said the company's B2B business had a "stellar" fourth quarter, with gross bookings up 24% year over year.
+Expedia Group's advertising revenue jumped 24% for full-year 2024.
+Net income in the fourth quarter increased 124% to $299 million. Revenue jumped 10% to nearly $3.2 billion.
+Expedia Group's share price was up nearly 9% to $172 in after-hours trading Thursday evening.
+Tags: dwell, earnings, expedia, hotels.com, online travel newsletter, short-term rentals, very online, vrbo
+Photo Credit: Expedia Group CEO Ariane Gorin at the 2024 Skift Global Forum. Skift
+Subscribe today to keep up with the latest travel industry news.
+Already a subscriber? Login
+[OPENAI][DBG][12:50:12] Starting thread
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com
+[OPENAI][DBG][12:50:12] Starting thread for Stock Market with 30712
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/latest-video/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/latest-video/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/loans/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/loans/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/cnbc-reprints/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/cnbc-reprints/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/investing/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/investing/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/2025/02/05/worlds-demand-for-gold-hit-another-record-high-in-2024.html
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/2025/02/05/worlds-demand-for-gold-hit-another-record-high-in-2024.html as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/2025/01/29/a-great-rotation-is-finally-here-unclear-if-investors-will-follow-.html
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/2025/01/29/a-great-rotation-is-finally-here-unclear-if-investors-will-follow-.html as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/sports/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/sports/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/defense/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/defense/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/brian-evans/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/brian-evans/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/adjustable-rate-mortgage-pros-and-cons/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/adjustable-rate-mortgage-pros-and-cons/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/best-buy-now-pay-later-apps/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/best-buy-now-pay-later-apps/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/best-student-loan-refinance-companies/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/best-student-loan-refinance-companies/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/personal-loans-to-apply-credit-score-580-or-lower/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/personal-loans-to-apply-credit-score-580-or-lower/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/asia-markets/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/asia-markets/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/transportation/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/transportation/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/climate/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/climate/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/2025/02/02/why-more-retirement-age-americans-keep-working.html
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/2025/02/02/why-more-retirement-age-americans-keep-working.html as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/live-tv/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/live-tv/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/best-car-insurance-companies/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/best-car-insurance-companies/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/funds-and-etfs/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/funds-and-etfs/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/pre-markets/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/pre-markets/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/what-are-index-funds/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/what-are-index-funds/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/best-money-market-accounts/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/best-money-market-accounts/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/best-small-business-credit-cards/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/best-small-business-credit-cards/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/julie-coleman/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/julie-coleman/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.peacocktv.com/?cid=20200101evergreensymdisp009&utm_source=cnbc&utm_medium=symphony_editorial_brandawareness_footerlink&utm_campaign=20200101evergreen&utm_term=na&utm_content=na_na/
+[OPENAI][ERR][12:50:12] Skipping link https://www.peacocktv.com/?cid=20200101evergreensymdisp009&utm_source=cnbc&utm_medium=symphony_editorial_brandawareness_footerlink&utm_campaign=20200101evergreen&utm_term=na&utm_content=na_na/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/health-and-science/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/health-and-science/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/keris-lahiff/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/keris-lahiff/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/application/pro/?__source=pro|globalfooter
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/application/pro/?__source=pro|globalfooter as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/terms
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/terms as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/mad-money/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/mad-money/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/2025/02/07/cnbc-daily-open-central-banks-are-lowering-rates-fed-may-not-do-so.html
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/2025/02/07/cnbc-daily-open-central-banks-are-lowering-rates-fed-may-not-do-so.html as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/retail/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/retail/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/best-travel-credit-cards/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/best-travel-credit-cards/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/best-personal-loans-for-bad-credit/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/best-personal-loans-for-bad-credit/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/2023/08/31/jim-cramers-guide-to-investing-dont-assume-market-moves-make-sense.html
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/2023/08/31/jim-cramers-guide-to-investing-dont-assume-market-moves-make-sense.html as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/2025/02/05/aussie-new-zealand-dollars-get-respite-ahead-of-chinas-reopen.html
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/2025/02/05/aussie-new-zealand-dollars-get-respite-ahead-of-chinas-reopen.html as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/how-to-file-your-taxes-for-free/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/how-to-file-your-taxes-for-free/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/markets/#MainContent
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/markets/#MainContent as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/select/insurance/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/select/insurance/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://buffett.cnbc.com
+[OPENAI][ERR][12:50:12] Skipping link https://buffett.cnbc.com as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/news-tips/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/news-tips/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/investingclub/analysis/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/investingclub/analysis/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/2025/02/06/stocks-making-the-biggest-moves-premarket-f-lly-hon-arm-and-more.html
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/2025/02/06/stocks-making-the-biggest-moves-premarket-f-lly-hon-arm-and-more.html as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/watchlist/
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/watchlist/ as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.cnbc.com/video/2025/02/07/labor-markets-tight-conditions-will-perpetuate-feds-difficult-position-stifels-lindsey-piegza.html
+[OPENAI][ERR][12:50:12] Skipping link https://www.cnbc.com/video/2025/02/07/labor-markets-tight-conditions-will-perpetuate-feds-difficult-position-stifels-lindsey-piegza.html as it has insufficient details
+[OPENAI][INF][12:50:12] LINK from the news: https://www.nbcuniversal.com/privacy?intake=CNBC
+[OPENAI][DBG][12:50:12] Processing summary for https://www.nbcuniversal.com/privacy?intake=CNBC with title: NBCUniversal Privacy Policy
+[OPENAI][DBG][12:50:12] Recieved OPENAI request for content Summarize the news from https://www.nbcuniversal.com/privacy?intake=CNBC with the title NBCUniversal Privacy Policy and content This Privacy Policy explains how NBCUniversal and its affiliates (“NBCUniversal Affiliates”) (collectively “ we” or “ us”) collect, use, and share information from or about you when you use our websites, downloadable applications, browser extensions, interactive TV applications, voice-activated skills, other digital services, connected devices such as theme-park devices, and off-line services that link to this policy,  or if you engage in business with us (“ NBCUniversal Services or Services”).
+This Privacy Policy applies to the NBCUniversal Services throughout the world. Any additional privacy terms that relate to specific NBCUniversal products or services should be read in conjunction with this Policy.
+As one of the world’s leading media and entertainment companies, we offer NBCUniversal Services through a wide range of businesses and under many different brands. The data controller of your personal information will be the NBCUniversal company which provides services to you or does business with you. You can find out more information about NBCUniversal, including a list of our NBCUniversal Affiliates, here .
+PLEASE READ THIS PRIVACY POLICY CAREFULLY TO UNDERSTAND HOW WE HANDLE YOUR INFORMATION. BY USING THE SERVICES, YOU ACKNOWLEDGE YOU HAVE READ AND UNDERSTAND THE PRIVACY POLICY AND THAT WE WILL COLLECT, USE AND SHARE YOUR INFORMATION AS SET FORTH BELOW.
+The tables below explain the categories of information we collect and the purposes for which we use them.  Each NBCUniversal Service’s collection and use may vary. Please note that we may use any or all of this information to comply with the law, detect or prevent fraud, for safety and security purposes, and to defend our legal rights. Further detail about each of the purposes is set out in the “Additional Information on Purposes” table below.
+Contact and account registration information
+For example: name, email, postal address, telephone number, account username and password, business contact information, and any information you may provide to us at an event or in person.
+Identification information, and demographics, and interests
+For example: as permitted by law, date of birth, race*, ethnicity*, gender, interests, lifestyle information, school and sports information, photos, social media credentials, including identification information about friends, contacts or referrals you provide.
+Transactional
+For example: credit/debit card details, purchase history, delivery address, membership information, reservations and other travel related information, meal preferences, and the personal details of your guests
+User-generated content
+For example: photos, videos, audio, and other information you may submit to us, such as comments on our forums.
+Research and feedback
+For example: comments that you send us through online forms and social media platforms, by email, over the phone, by mail, or in surveys.
+Wellness and Fitness Data
+For example: step counts or physical activity from connected apps or devices, fitness levels, wellness goals, nutritional preferences, and completed workout challenges.
+Biometric identifiers*
+For example: as permitted by law, facial scans or fingerprints we collect at some of our theme parks, studios, our offices.
+Health Data*
+For example: as permitted by law, vaccine or symptom related information
+Audio and video
+For example: audio recordings of customer service calls or security video footage if you visit one of our properties.
+Device information and identifiers
+For example: IP address, cookie IDs, browser type and language, operating system, platform type, device type, and advertising and app identifiers.
+Connection and Usage (including information collected through cookies)
+For example: domain names, browsing activity, scrolling and keystroke activity, advertisements viewed, forms or fields you complete or partially complete, search terms, whether you open an email, content (including videos) you view and duration, quality of the service and interaction with the content, logs, and other similar information. If these events occur while you are offline, they may be logged and uploaded to us when you next connect.
+Geolocation*
+For example: city, state and ZIP code associated with your IP address or derived through Wi-Fi triangulation.
+We will ask for your permission before using your precise location from GPS-based functionality on your mobile devices.
+Information from public and commercial sources
+For example: demographic including at a household level, contact information, inferences about your preferences, viewing and other consumption choices, loyalty program membership, and purchasing data.
+Social Media Information
+For example: if you interact with us through a social media service or log in using social media credentials, depending on your social media settings, we may have access to your information from that social network such as your name, email address, friend list, photo, age, gender, location, birthday, social networking ID, current city, your comments about our Services, and the people/sites you follow.
+Third Party Partners in Connection with providing the NBCUniversal Services
+For example: contact information such as authentication information, account legitimacy, search requests, log events and device identifiers such as IP addresses, device IDs or other unique identifiers.
+*Please note: this information is considered “sensitive” under certain laws, and we process this information in accordance with applicable legal requirements.
+Business contact information
+For example: company name, your name, email address, telephone number and job.
+Transactional information
+For example: bank details of suppliers, credit/debit card details, purchase history, delivery address.
+Demographics
+For example (as permitted by law): ethnicity (minority owned businesses), gender (women-owned businesses)
+Due diligence information
+For example: contact information, nationality (as permitted by law), job title, age, date of birth, gender, country of residence, employment and education information, public, religious, political or trade union role (each as permitted by laws), personal and professional affiliations, connections to criminal activities or offences related to money laundering.
+Events Information
+For example: travel information including passport and visa, meal preferences and restrictions, payment details, and guest’s details.
+Social Media and Lifestyle Information
+For example: if you interact with us on social media or other platforms as an influencer or an athlete, we may have access to your name, photos, age, gender, location, birthday, social networking ID, current city, interests, lifestyle information, list of followers, engagement with your posts, school and sports information.
+Provide the NBCUniversal Services, for example:
+Personalize your experience, for example:
+Send you NBCUniversal marketing and advertising, for example:
+Provide a seamless experience across platforms and devices, for example:
+Build and manage business-to-business relationships, for example:
+Market and advertise for third parties, for example:
+Compliance and risk management activities for business-to-business relationships, for example:
+Safety and security purposes, for example:
+We may combine all the information we collect from or receive about you for the outlined purposes. We may aggregate or deidentify your information and may use, share, rent or sell aggregated or deidentified information for any purpose, and such information is not subject to this Privacy Policy.
+We may disclose your information to:
+
+
+
+Partners: We may disclose your information to certain third party partners. Depending on the partnership, we may disclose certain information including contact information (at your direction), identification and demographic and interest information, transactional information, user-generated content that you provide, research and feedback, device information and identifiers, connection and usage information, public and commercial information, and social media information. Partners may use your information pursuant to their own policies.
+
+
+
+Service Providers: We engage vendors to perform business purposes on our behalf and provide information to them to enable them to provide us with such business purposes, including research and analytics, hosting, transaction and payment processing, promotion administration, fraud prevention, identity management, acquisition and other services. Service providers may use such information for their operational purposes in order to provide their services to us.
+
+
+
+
+Other Sharing
+We may provide connection and usage information about you along with a hashed or masked identifier (contact information), with third parties such as partners and social networks to inform the offers we send you and for advertising measurement or analytics. With your appropriate consent when required, and consistent with applicable law, we may disclose your video viewing behavior with third parties including service providers, advertising companies, analytic partners, and social media sites.
+
+Sale or transfer of all or part of our business or assets
+In the event that NBCUniversal or any NBCUniversal Affiliate is involved in a merger, acquisition, transfer of control, bankruptcy, reorganization or sale of assets, we may sell or transfer the information described in this Privacy Policy as part of that transaction or diligence associated with or in contemplation of such matters.
+The laws of some jurisdictions, such as the European Union the UK, or Brazil, require companies to tell you about the legal basis for using, sharing, or disclosing your information. To the extent those laws apply, we may rely on the following legal bases:
+
+
+Legitimate interest: where use of your information is necessary for our or others legitimate interests and where the use is not outweighed by your rights and interests. Below are some examples of such interests:
+
+
+
+Most of the NBCUniversal Services are intended for users over the age of 18. Information about the practices of NBCUniversal Services directed to children under the age of 13 in the United States or 16 in the European Union or where we have actual knowledge a child is under such ages can be found in our Children's Privacy Policy. If you are a parent or guardian and believe your child under 13 in the United States or under 16 in the European Union has provided us with personal information without consent, please contact us at [email protected].
+
+Depending on where you live, you may have certain rights with respect to your information. You have the right not to be discriminated against (as provided for in applicable law) for exercising your rights under some local laws such as in California.
+For example, under local laws, including in the European Union, you may be able to ask us to:
+We will respond within the time period prescribed by applicable law. Please note that the above rights are subject to exceptions and limitations.
+Some NBCUniversal Services can only be provided if we have your information, therefore deletion of your information will result in termination of such Services.
+We will take reasonable steps to verify your identity, including authenticating you through the email address. We may require further documentation such as a password and user ID before granting access to your information.
+California, Colorado, Connecticut, Delaware, Iowa, Montana, Nebraska, New Hampshire, New Jersey, Oregon, Texas, Utah, and Virginia residents with rights under local law may click here.
+In California, Colorado, Connecticut, Delaware, Montana, Nebraska, New Hampshire, New Jersey, Oregon and Texas their authorized agents may click here for access, correction, or deletion requests. Alternatively, California and Colorado residents or their authorized agents may call 1-800-447-0663 to make these requests. California residents may view annual California consumer request metrics here.
+U.S. residents who wish to learn more about access, correction or deletion requests may click here.
+If you are based outside the U.S. and would like to exercise any individual right, please fill out this online form.
+For business partners who would like to exercise any individual right, please click here. For Universal+ consumers based in Latin America, you can exercise any individual right through this online form here. If you are a California resident business contact and want to make a request, please click here.
+Your rights and our responses will vary based on your state or country of residency. Please note that you may be located in a jurisdiction where we are not obligated, or are unable, to fulfill a request.  In such a case, your request may not be fulfilled. If you have any unresolved concerns, you may have the right to complain to your data protection authority.
+Colorado, Connecticut, Delaware, Iowa, Montana, Nebraska, New Hampshire, New Jersey, Oregon, Texas and Virginia residents may appeal the denial of a request here. We will respond within the legally required time period, including a written explanation of the results of your appeal.
+Where NBCUniversal acts as a service provider for third-party organizations, such as sports leagues and clubs, please contact your organizations directly to exercise any applicable individual’s rights.
+“Privacy Choices”: Do Not Sell or Share or Process My Personal Information for Targeted Advertising (California, Colorado, Connecticut, Delaware, Iowa, Montana, Nebraska, New Hampshire, Oregon, Texas, Utah, and Virginia Residents only)
+
+If you or (in certain states where required by law) your authorized agent would like to opt out of NBCUniversal’s use or disclosure of your information for such purposes (to the extent this is considered a sale, share, or targeted advertising), you may do so in the footer or settings menu of the brand with which you engage by selecting “Your Privacy Choices” link.
+You may still receive advertising, including personalized ads based on NBCUniversal data on the Services. On some of our websites and applications when you click the “Your Privacy Choices” link in the website footer or in the application settings menu, you will be shown a tool that allows you to opt out of the online “sales” and sharing/processing of personal information for targeted ads on the website and application.  Please note, if you use different browsers, devices, or services you will need to make your elections separately. In some cases, you may also be presented with form field to complete, in those cases we ask for your email address or other information so we may add it to an appropriate suppression list. In other cases, you will be directed to this page where we provide additional information and options for you to learn more about your choices and how to opt out from interest-based advertising more broadly.
+Please note, if we do not detect that you are in California, Colorado, Connecticut, Delaware, Iowa, Montana, Nebraska, New Hampshire Oregon, Texas, Utah or Virginia, the opt out of sale or sharing/processing for targeted advertising data choices will not apply even if you take the actions described above.
+Please note that if you have a legally recognized browser-based opt out preference signal turned on via your device browser (such as Global Privacy Control), we recognize such preference in accordance and to the extent required by applicable law.
+Sensitive Data
+We may use certain sensitive personal information as allowable by law for purposes including analytics and to enable marketing to you and the delivery of targeted advertising on the NBCUniversal Services or other sites, such displaying an ad relevant to your precise location data.
+Incentive Programs (California Residents Only)
+The Services may offer opportunities to receive certain services or benefits such as discounts or free or extended services (such as bonus streaming time or additional videos), which may require the provision of personal information. Such opportunities could be considered a financial incentive under applicable law (each, an “Incentive Program”).  When you participate in an Incentive Program, you agree to the terms of that Incentive Program, and may revoke your participation depending on the Incentive Program (e.g., by opting out of emails or terminating a streaming service). To the extent we can determine the value of your information, we consider the value of providing you with a more personalized experience as well as the expenses we incur in providing Incentive Programs that are reasonably related to the costs associated with offering the Incentives.
+
+
+Third Parties List – Shine the Light (California Residents only)
+California residents can also request a list of all the third parties to which we have disclosed certain personal information (as defined by California’s Shine the Light law) during the preceding year for those third parties’ direct marketing purposes. California residents may contact us at 30 Rockefeller Plaza, New York, NY 10112, US, NBCUniversal Legal Department Attn: Chief Privacy Officer. In the body of your request, you must include: “California Shine the Light Request”, your name, a current California address including, street address, city, state, and zip code, as well as sufficient information for us to determine if the law applies to you. You will need to attest to the fact that you are a California resident. We will not accept requests by telephone, email, or facsimile, and we are not responsible for notices that are not labeled or sent properly, or that do not have complete information.
+
+Nevada Residents
+NBCUniversal does not engage in the following activity, however Nevada law requires us to post the following: certain Nevada consumers may opt out of the sale of “covered information” for monetary consideration to a person for that person to license or sell such information. “Covered information” includes first and last name, address, email address, phone number, Social Security Number, or an identifier that allows a specific person to be contacted either physically or online.
+If you are a Nevada resident who has purchased goods or services from NBCUniversal, you may submit a request to opt out of any potential future sales under Nevada law by filling out this form. We will maintain your request in the event our practices change.
+
+Notice to Customers of Universal Studios Japan
+For customers of Universal Studios Japan, NBCUniversal and Universal Studios Japan may use your personal information jointly as follows:
+For questions, requests, or complaints related to the jointly-used personal information, you may contact USJ, LLC, who is responsible for the management of the jointly used personal information, at [email protected].
+For customers of Universal Studios Japan who have questions or complaints related to Universal Studios Japan’s privacy practices, you may contact Universal Studios Japan directly by emailing [email protected],or calling 0570-20-0606, or writing to 2-1-33 Sakurajima, Konohana-ku, Osaka 554-0031 Japan, USJ LLC. For issues related to Club Universal please visit the Club Universal Inquiry page.
+Cookies and Similar Technologies
+We and our service providers, advertisers, and other third parties use cookies and similar technologies (e.g., HTTP cookies, HTML 5, flash local storage cookies, web beacons, GIFs, embedded scripts, ETags/cache browsers, hashed identifiers and software development kits) to recognize you on, off, and across NBCUniversal Services and your devices. For more information about the use of cookies and similar technologies on the NBCUniversal Services (including your opt-out choices) please see our Cookie Notice.
+
+Mobile App and Connected Devices
+Depending on the device you use, you may be able to manage your advertising and location preferences through your device settings and as outlined in our Cookie Notice. Many operating systems provide their own instructions on how to prevent the delivery of tailored in-application advertisements. We do not control how the applicable platform operator allows you to manage personalized in-application advertisements. You should review your device manufacturer’s support materials and/or the device settings for the respective operating systems for more detail on how to manage such preferences.
+You can also choose to connect external apps and devices to certain NBCUniversal Services. For example, you can link your Apple Health app to certain NBCUniversal Services so that we can use it with other information we collect to provide you with tailored wellness and nutrition plans based on your fitness and activity information and personalized content and product recommendations. You can control the data that you share with NBCUniversal using your app or device settings.
+You can stop all collection of information by a mobile app by uninstalling the app.
+
+Opt-out of Video Measurement Research by Nielsen
+NBCUniversal video services may feature Nielsen proprietary measurement software that will allow you to contribute to market research, like Nielsen’s TV Ratings.
+To learn more about Nielsen digital measurement products and your choices in regard to them, including in mobile apps and connected devices, please visit http://www.nielsen.com/digitalprivacy for more information.
+
+Third-Party Online Services
+NBCUniversal Services may be provided through and/or utilize features (such as voice controls) of third party platforms or contain links to third party services. These other platforms (such as gaming systems, smart TVs, mobile devices, and set top boxes) and sites (even if co-branded as NBCUniversal) may collect information about you and use this information in accordance with their own privacy policies and terms of service. We do not control those third parties’ policies or practices. Where NBCUniversal collects personal information on a co-branded website or service, we will provide a link to our privacy policy as appropriate. In some circumstances, NBCUniversal may host some websites on behalf of others and those entities may place or permit the placement of cookies and other tracking technology. NBCUniversal is not responsible for these tracking practices.
+We maintain organizational, technical, and physical safeguards to help protect the information we collect and use. These safeguards vary depending upon a variety of factors including the sensitivity of the information we collect and use. Despite all reasonable practices, no security method is infallible.
+We will keep your information only for as long as it is necessary to fulfill the purposes described above, unless a longer retention is required or permitted by law. In determining how long to retain information, we consider the amount, nature and sensitivity of the information, the potential risk of harm from unauthorized use or disclosure of the information, the purposes for which we process the information, applicable legal requirements, and our legitimate interests.  The purposes for which we process information (as well as the other factors listed above) may dictate different retention periods for the same types of information.  For example, we retain your email address as an authentication credential (where applicable) as long as you have an account with us and an additional period of time after that for our legitimate interests and for our fraud and legal compliance purposes.  If you opt out of email marketing, we maintain your email on our suppression list for an extended time to comply with your request.
+We may delete or de-identify your information sooner if we receive a verifiable deletion request, subject to exemptions under applicable law. The retention period that applies to your information may vary depending on the NBCUniversal Services you use and how you interact with them. Some NBCUniversal Services may provide additional details on their data retention practices, so we encourage you to consult their website and/or FAQs. In addition, in the event you have an account that holds credits, point balances or other entitlements, we may continue to hold the account to allow you to obtain the benefit in accordance with the relevant terms and conditions.
+NBCUniversal is a global company and has its headquarters in the United States. We may transfer your information to Related Companies, service providers, and other third parties located outside of your country of residence, including in the United States. This is necessary to provide our Services and for the purposes outlined in this Privacy Policy.  Data privacy laws vary from country to country and may not be equivalent to, or as protective as, the laws in your home country.  We take steps to ensure that reasonable safeguards are in place with aim to ensure an appropriate level of protection for your information, in accordance with applicable law. These measures include data transfer agreements. By providing us with your information, you acknowledge any such transfer, storage or use.
+We reserve the right to amend this Privacy Policy at any time to reflect changes to our practices or the law. We will make the revised Privacy Policy accessible through the NBCUniversal Services.  Please check the NBCUniversal Services periodically for updates.
+The date at the top of the Privacy Policy tells you when it was last updated. If we make material changes to the way we collect or use your information, you will be provided with appropriate notice, including by, but not limited to, posting the updated Privacy Policy on this website, and providing notice in accordance with legal requirements. Any changes to this Privacy Policy will become effective when the revised Privacy Policy is posted.  By continuing to use the NBCUniversal Services following any changes to this Privacy Policy, you acknowledge you have read and understand the updated Privacy Policy, and you understand that we will collect, use, and share information as stated therein.
+For any questions or complaints about this Privacy Policy or our privacy practices, please contact us here. You can also contact us at 30 Rockefeller Plaza, New York, NY 10112, USA, NBCUniversal Legal Department Attn: Chief Privacy Officer.
+The UK Representative of our US-based NBCUniversal Affiliates is NBCUniversal International Limited, 1 Central St Giles, St Giles High Street, London WC2H 8NU, United Kingdom.
+The EU Representative of our US-based NBCUniversal Affiliates is Universal Studios International B.V., Moermanskkade 421, 1013 BC Amsterdam, The Netherlands.
+Germany:  If you are using NBCUniversal Services provided by Universal Pictures Germany GmbH or Universal Pictures International Germany GmbH, you can contact our German Data Protection Officer.
+You can contact the German Data Protection Officer, the UK Representative or the EU Representative by emailing [email protected] and stating which of the above you would like to contact.
+To find out more about the information we collect during our recruitment process, please see our Candidate Privacy Policy. We have separate privacy policies for workforce data.
+[OPENAI][DBG][12:50:14] Run status: queued
+[OPENAI][DBG][12:50:14] Run status: queued
+[OPENAI][DBG][12:50:14] Run status: queued
+[OPENAI][DBG][12:50:15] Run status: in_progress
+[OPENAI][DBG][12:50:15] Run status: queued
+[OPENAI][DBG][12:50:15] Run status: in_progress
+[OPENAI][DBG][12:50:16] Run status: in_progress
+[OPENAI][DBG][12:50:16] Run status: in_progress
+[OPENAI][DBG][12:50:16] Run status: in_progress
+[OPENAI][DBG][12:50:17] Run status: in_progress
+[OPENAI][DBG][12:50:17] Run status: in_progress
+[OPENAI][DBG][12:50:17] Run status: queued
+[OPENAI][DBG][12:50:17] Run status: in_progress
+[OPENAI][DBG][12:50:18] Run status: in_progress
+[OPENAI][DBG][12:50:18] Run status: in_progress
+[OPENAI][DBG][12:50:18] Run status: queued
+[OPENAI][DBG][12:50:18] Run status: in_progress
+[OPENAI][DBG][12:50:19] Run status: in_progress
+[OPENAI][DBG][12:50:19] Run status: in_progress
+[OPENAI][DBG][12:50:19] Run status: in_progress
+[OPENAI][DBG][12:50:19] Run status: in_progress
+[OPENAI][DBG][12:50:20] Run status: in_progress
+[OPENAI][DBG][12:50:20] Run status: in_progress
+[OPENAI][DBG][12:50:20] Run status: in_progress
+[OPENAI][DBG][12:50:20] Run status: in_progress
+[OPENAI][DBG][12:50:20] Run status: in_progress
+[OPENAI][DBG][12:50:20] Run status: in_progress
+[OPENAI][DBG][12:50:21] Run status: in_progress
+[OPENAI][DBG][12:50:21] Run status after completion: failed, Run ID: run_PYKmp9hh3ZjQMflNCyic37dU
+[OPENAI][ERR][12:50:21] Run failed at : 1739085619
+[OPENAI][DBG][12:50:21] Run status after completion: failed, Run ID: run_Kz5HO785x8sgV7RHl5iZGjZA
+[OPENAI][ERR][12:50:21] Run failed at : 1739085620
+[OPENAI][DBG][12:50:21] Run status: in_progress
+[OPENAI][DBG][12:50:21] Run status: in_progress
+[OPENAI][DBG][12:50:22] Run status: in_progress
+[OPENAI][DBG][12:50:22] Run status: in_progress
+[OPENAI][DBG][12:50:23] Run status: in_progress
+[OPENAI][DBG][12:50:23] Run status: in_progress
+[OPENAI][DBG][12:50:24] Run status after completion: failed, Run ID: run_P2hm1RjL6yIgg853FjrBhgGt
+[OPENAI][ERR][12:50:24] Run failed at : 1739085622
+[OPENAI][DBG][12:50:24] Run status after completion: completed, Run ID: run_gSIZvYqclrTwoO2vbwvVxb8U

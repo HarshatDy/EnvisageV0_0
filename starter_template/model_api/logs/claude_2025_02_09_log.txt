@@ -1,0 +1,65 @@
+[CLAUDE_API][INF][08:36:41] News for CLIMATE_TECHNOLOGY
+[CLAUDE_API][INF][08:36:41] Getting news from sub_source : primary_sources
+[CLAUDE_API][ERR][08:36:41] ************************ERROR************************
+[CLAUDE_API][ERR][08:36:41] Failed to extract news from https://www.bloomberg.com/green with error: 403 Client Error: Forbidden for url: https://www.bloomberg.com/green
+[CLAUDE_API][ERR][08:36:41] *****************************************************
+[CLAUDE_API][ERR][08:41:34] ************************ERROR************************
+[CLAUDE_API][ERR][08:41:34] Failed to extract news from https://cleantechnica.com with error: 403 Client Error: Forbidden for url: https://cleantechnica.com/
+[CLAUDE_API][ERR][08:41:34] *****************************************************
+[CLAUDE_API][INF][08:41:35] Successfully inserted data for CLIMATE_TECHNOLOGY - primary_sources
+[CLAUDE_API][INF][08:41:35] Getting news from sub_source : industry_analysis
+[CLAUDE_API][INF][08:49:16] Successfully inserted data for CLIMATE_TECHNOLOGY - industry_analysis
+[CLAUDE_API][INF][08:49:16] News for GOVERNMENT_POLICY
+[CLAUDE_API][INF][08:49:16] Getting news from sub_source : international_coverage
+[CLAUDE_API][ERR][08:49:16] ************************ERROR************************
+[CLAUDE_API][ERR][08:49:16] Failed to extract news from https://www.reuters.com/policy with error: 401 Client Error: HTTP Forbidden for url: https://www.reuters.com/policy
+[CLAUDE_API][ERR][08:49:16] *****************************************************
+[CLAUDE_API][INF][08:53:09] Successfully inserted data for GOVERNMENT_POLICY - international_coverage
+[CLAUDE_API][INF][08:53:09] Getting news from sub_source : regional_national
+[CLAUDE_API][ERR][08:53:09] ************************ERROR************************
+[CLAUDE_API][ERR][08:53:09] Failed to extract news from https://www.politico.com/energy-and-environment with error: 403 Client Error: Forbidden for url: https://www.politico.com/energy-and-environment
+[CLAUDE_API][ERR][08:53:09] *****************************************************
+[CLAUDE_API][ERR][08:53:10] ************************ERROR************************
+[CLAUDE_API][ERR][08:53:10] Failed to extract news from https://www.euractiv.com with error: 403 Client Error: Forbidden for url: https://www.euractiv.com/
+[CLAUDE_API][ERR][08:53:10] *****************************************************
+[CLAUDE_API][INF][08:53:10] Successfully inserted data for GOVERNMENT_POLICY - regional_national
+[CLAUDE_API][INF][08:53:10] News for TRAVEL_INDUSTRY
+[CLAUDE_API][INF][08:53:10] Getting news from sub_source : industry_news
+[CLAUDE_API][ERR][08:55:07] ************************ERROR************************
+[CLAUDE_API][ERR][08:55:07] Failed to extract news from https://www.phocuswire.com with error: 405 Client Error: Not Allowed for url: https://www.phocuswire.com/
+[CLAUDE_API][ERR][08:55:07] *****************************************************
+[CLAUDE_API][ERR][08:55:07] ************************ERROR************************
+[CLAUDE_API][ERR][08:55:07] Failed to extract news from https://www.travelweekly.com with error: 405 Client Error: Not Allowed for url: https://www.travelweekly.com/
+[CLAUDE_API][ERR][08:55:07] *****************************************************
+[CLAUDE_API][INF][08:55:08] Successfully inserted data for TRAVEL_INDUSTRY - industry_news
+[CLAUDE_API][INF][08:55:08] Getting news from sub_source : sustainability_focus
+[CLAUDE_API][ERR][08:55:09] ************************ERROR************************
+[CLAUDE_API][ERR][08:55:09] Failed to extract news from https://www.sustainabletravel.org with error: 403 Client Error: Forbidden for url: https://www.sustainabletravel.org/
+[CLAUDE_API][ERR][08:55:09] *****************************************************
+[CLAUDE_API][ERR][08:55:10] ************************ERROR************************
+[CLAUDE_API][ERR][08:55:10] Failed to extract news from https://www.responsibletravel.org with error: 403 Client Error: Forbidden for url: https://www.responsibletravel.org/
+[CLAUDE_API][ERR][08:55:10] *****************************************************
+[CLAUDE_API][INF][08:55:10] Successfully inserted data for TRAVEL_INDUSTRY - sustainability_focus
+[CLAUDE_API][INF][08:55:10] News for STOCK_MARKET
+[CLAUDE_API][INF][08:55:10] Getting news from sub_source : sector_specific
+[CLAUDE_API][ERR][08:58:25] ************************ERROR************************
+[CLAUDE_API][ERR][08:58:25] Failed to extract news from https://www.renewableenergyworld.com with error: 403 Client Error: Forbidden for url: https://www.renewableenergyworld.com/
+[CLAUDE_API][ERR][08:58:25] *****************************************************
+[CLAUDE_API][INF][08:58:26] Successfully inserted data for STOCK_MARKET - sector_specific
+[CLAUDE_API][INF][08:58:26] Getting news from sub_source : general_financial
+[CLAUDE_API][ERR][08:58:26] ************************ERROR************************
+[CLAUDE_API][ERR][08:58:26] Failed to extract news from https://www.bloomberg.com/markets with error: 403 Client Error: Forbidden for url: https://www.bloomberg.com/markets
+[CLAUDE_API][ERR][08:58:26] *****************************************************
+[CLAUDE_API][ERR][08:58:26] ************************ERROR************************
+[CLAUDE_API][ERR][08:58:26] Failed to extract news from https://www.ft.com/markets with error: 406 Client Error: Not Acceptable for url: https://www.ft.com/markets
+[CLAUDE_API][ERR][08:58:26] *****************************************************
+[CLAUDE_API][ERR][08:58:26] ************************ERROR************************
+[CLAUDE_API][ERR][08:58:26] Failed to extract news from https://www.reuters.com/business with error: 401 Client Error: HTTP Forbidden for url: https://www.reuters.com/business
+[CLAUDE_API][ERR][08:58:26] *****************************************************
+[CLAUDE_API][INF][08:58:26] Successfully inserted data for STOCK_MARKET - general_financial
+[CLAUDE_API][INF][08:58:26] News for CROSS_SECTOR
+[CLAUDE_API][INF][08:58:26] Getting news from sub_source : general_coverage
+[CLAUDE_API][ERR][09:05:02] ************************ERROR************************
+[CLAUDE_API][ERR][09:05:02] Failed to extract news from https://www.science.org with error: 403 Client Error: Forbidden for url: https://www.science.org/
+[CLAUDE_API][ERR][09:05:02] *****************************************************
+[CLAUDE_API][INF][09:05:02] Successfully inserted data for CROSS_SECTOR - general_coverage
