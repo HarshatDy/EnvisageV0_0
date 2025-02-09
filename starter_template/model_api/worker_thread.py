@@ -2,6 +2,8 @@ import threading
 from openai_api import start_openai_assistant
 from claude_api import start_claude_assistant
 import time
+from logging_scripts import create_log_file, append_to_log
+from datetime import datetime
 
 def run_openai_assistant():
     start_openai_assistant()
@@ -12,15 +14,21 @@ def run_claude_assistant():
     print("Claude Completed : Check DB for updated result!")
 
 if __name__ == "__main__":
+    log_file =f"log_{time.strftime('%Y_%m_%d')}_threading.txt"
+    create_log_file(log_file)
     program_start = time.time()
     thread1 = threading.Thread(target=run_openai_assistant)
+    append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] Creating OpenAI Assistant")
     print("Creating OpenAI Assistant")
     thread2 = threading.Thread(target=run_claude_assistant)
+    append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] Creating Claude Assistant")
     print("Creating Claude Assistant")
 
     thread1.start()
+    append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] Starting OpenAI Assistant")
     print("Starting OpenAI Assistant")
     thread2.start()
+    append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] Starting Claude Assistant")
     print("Starting Claude Assistant")
 
     thread1.join()
@@ -29,7 +37,11 @@ if __name__ == "__main__":
     program_end = time.time()
     total_execution_time = program_end - program_start
 
+    append_to_log(log_file, "[INF] All tasks completed")
     print("************ All tasks completed ************")
+    append_to_log(log_file, "[INF] ************ All tasks completed ************")
+    append_to_log(log_file, f"[INF] Total Program Execution Time: {total_execution_time:.2f} seconds")
+    append_to_log(log_file, "[INF] *********************************************")
     print("*********************************************")
     print(f"\nTotal Program Execution Time: {total_execution_time:.2f} seconds")
     print("*********************************************")

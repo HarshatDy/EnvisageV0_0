@@ -3,19 +3,32 @@ from bs4 import BeautifulSoup
 # from openai_api import news_sources
 from urllib.parse import urljoin
 from typing import List, Set
+from logging_scripts import *
+from datetime import datetime
+
+
+log_file = f"web_scrapper_{datetime.today().strftime('%Y_%m_%d')}_log.txt"
+create_log_file(log_file)
 
 
 def get_links_and_content_from_page(url: str) -> dict:
     response = requests.get(url, timeout=10) # added timeout for better performance
-    response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+    append_to_log(log_file,f'[WEB_SCRAPPER][ERR][{datetime.today().strftime('%H:%M:%S')}]{response.raise_for_status()}')
+    response.raise_for_status()  # Raise HTTP  Error for bad responses (4xx or 5xx)
     # print(response.text)
     links= extract_links_from_html(response.text, url)
     # print(links)
     content = {}
     for link in links:
+        append_to_log(log_file,f'[WEB_SCRAPPER][INF][{datetime.today().strftime("%H:%M:%S")}] Getting content from {link}')
         print(f"Extracting content from {link}")
         content[link] = extract_news_content(link)
-    print(content)
+    if content:
+        append_to_log(log_file,f'[WEB_SCRAPPER][SUC][{datetime.today().strftime("%H:%M:%S")}] Extracted successfully from {url}')
+        print(f"Extracted successfully from {url}")
+    else:
+        append_to_log(log_file,f'[WEB_SCRAPPER][ERR][{datetime.today().strftime("%H:%M:%S")}] Failed to extract from {url}')
+        print(f"Failed to extract from {url}")
     return content
 
 
@@ -34,6 +47,7 @@ def extract_news_content(page: requests.get) -> List[str]:
         if title:
           title = title.text.strip()
         else:
+           append_to_log(log_file,f'[WEB_SCRAPPER][ERR][{datetime.today().strftime("%H:%M:%S")}] Could not find article title')
            return "Error: Could not find an article title"
 
         # Attempt to find the main article body
@@ -50,12 +64,15 @@ def extract_news_content(page: requests.get) -> List[str]:
                 paragraphs = main_content.find_all('p')
                 body_text = "\n".join([p.text.strip() for p in paragraphs])
             else:
+                append_to_log(log_file,f'[WEB_SCRAPPER][ERR][{datetime.today().strftime("%H:%M:%S")}] Could not find article body ')
                 return "Error: Could not find an article body"
 
         return [title, body_text]
     except requests.exceptions.RequestException as e:
+       append_to_log(log_file,f'[WEB_SCRAPPER][ERR][{datetime.today().strftime("%H:%M:%S")}] Could not fetch page: {e}')
        return f"Error: Could not fetch page: {e}"
     except Exception as e:
+        append_to_log(log_file,f'[WEB_SCRAPPER][ERR][{datetime.today().strftime("%H:%M:%S")}] An unexpected error occurred: {e}')
         return f"Error: An unexpected error occurred: {e}"
 
 

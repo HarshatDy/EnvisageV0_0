@@ -1,0 +1,8 @@
+[WORKER_THREAD][INF][08:36:41] Creating OpenAI Assistant
+[WORKER_THREAD][INF][08:36:41] Creating Claude Assistant
+[WORKER_THREAD][INF][08:36:41] Starting OpenAI Assistant
+[WORKER_THREAD][INF][08:36:41] Starting Claude Assistant
+[INF] All tasks completed
+[INF] ************ All tasks completed ************
+[INF] Total Program Execution Time: 1702.21 seconds
+[INF] *********************************************

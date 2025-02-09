@@ -4,13 +4,17 @@ import os
 from web_scrapper_api import get_links_and_content_from_page
 from mongo import db
 from datetime import datetime
-
+from logging_scripts import create_log_file, append_to_log
 
 
 load_dotenv()
 client = anthropic.Anthropic(
     api_key=os.getenv('ANTHROPIC_API_KEY')
 )
+
+log_file = f"claude_{datetime.today().strftime('%Y_%m_%d')}_log.txt"
+create_log_file(log_file)
+
 
 # message = client.messages.create(
 #     model="claude-3-5-sonnet-20241022",
@@ -54,6 +58,7 @@ def claude_api_request(txt)->str:
             }
         ]
     )
+    append_to_log(log_file, f"[CLAUDE_API][INF][{datetime.today().strftime('%H:%M:%S')}] {message.content[0].text}")
     print(message.content)
     return message.content[0].text
 
@@ -61,9 +66,9 @@ news_sources = {
     "CLIMATE_TECHNOLOGY": {
         "primary_sources": [
             "https://www.bloomberg.com/green",
-            # "https://www.carbonbrief.org",
-            # "https://www.climatechangenews.com",
-            # "https://cleantechnica.com"
+            "https://www.carbonbrief.org",
+            "https://www.climatechangenews.com",
+            "https://cleantechnica.com"
         ],
         "industry_analysis": [
             "https://www.greentechmedia.com",
@@ -118,19 +123,30 @@ news_sources = {
 def start_claude_assistant():
     claude_links_db = db['claude_api']
     for key in news_sources:
+        append_to_log(log_file, f"[CLAUDE_API][INF][{datetime.today().strftime('%H:%M:%S')}] News for {key}")
         # print(f"News for {key}")
         for sub_source in news_sources[key]:
             links={}
+            append_to_log(log_file, f"[CLAUDE_API][INF][{datetime.today().strftime('%H:%M:%S')}] Getting news from sub_source : {sub_source}")
             # print(f"Getting news from {sub_source}")
             for source in news_sources[key][sub_source]:
                 try:
                     links[source] = get_links_and_content_from_page(source)
                 except Exception as e:
+                    append_to_log(log_file, f"[CLAUDE_API][ERR][{datetime.today().strftime('%H:%M:%S')}] ************************ERROR************************")
+                    append_to_log(log_file, f"[CLAUDE_API][ERR][{datetime.today().strftime('%H:%M:%S')}] Failed to extract news from {source} with error: {e}")
+                    append_to_log(log_file, f"[CLAUDE_API][ERR][{datetime.today().strftime('%H:%M:%S')}] *****************************************************")
                     print("************************ERROR************************")
                     print(f"Failed to extract news from {source} with error: {e}")
                     print("*****************************************************")
             print("\n\n")
             today = datetime.today().strftime('%Y-%m-%d')
+            try:
+                claude_links_db.insert_one({today:{key:{sub_source:links}}})
+                append_to_log(log_file, f"[CLAUDE_API][INF][{datetime.today().strftime('%H:%M:%S')}] Successfully inserted data for {key} - {sub_source}")
+            except Exception as e:
+                append_to_log(log_file, f"[CLAUDE_API][ERR][{datetime.today().strftime('%H:%M:%S')}] Failed to insert data into MongoDB: {e}")
+                print(f"Failed to insert data into MongoDB: {e}")
             claude_links_db.insert_one({today:{key:{sub_source:links}}})
             # print("--------------------------------------------")
             # print(links)
