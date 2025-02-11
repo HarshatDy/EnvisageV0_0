@@ -6,6 +6,9 @@ __pychache__/
 *.env
 starter_template/pass.env
 
+#logs
+starter_template/logs/
+
 #additional
 *.log
 *.tmp
