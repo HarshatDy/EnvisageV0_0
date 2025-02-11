@@ -292,6 +292,7 @@ def process_category(category, sources):
                 "summary": summary.data[0].content[0].text.value
             })
             with thread_lock:
+                append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Thread acquired lock for {result[category]}")
                 thread_result[category] = result
             # write_to_file(result, "result.txt")
 
@@ -357,48 +358,50 @@ def fetch_todays_results():
 # if thread_result:
 #     push_results_to_db(thread_result)
 #     append_to_log(log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] Successfully pushed summarized results to MongoDB")
-result_json = fetch_todays_results()
-
-if not result_json:
-    append_to_log(log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] No results found for today")
-    run_sumarizing_threads()
-    if thread_result:
-        push_results_to_db(thread_result, "Result")
-        append_to_log(log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] Successfully pushed summarized results to MongoDB")
-    else:
-        append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] No thread_result found, nothing to push to MongoDB")
-else:
-    append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Result JSON length: {len(result_json)}")
-    result_length = len(result_json)
-    json_parts = []
-    if result_length > 256000:
-        # Split the JSON string into two halves
-        middle = result_length // 2
-        json_parts.append(result_json[:middle])
-        json_parts.append(result_json[middle:])
-    else:
-        json_parts.append(result_json)
-    
-    for json_part in json_parts:
-        content=f"""Please analyze this news data and create:
-        1. Key bullet points for each category
-        2. Important trends or patterns
-        3. A brief executive summary
-        4. Highlight any critical developments
-        Data: {json_part}"""
-        summary[json_part] = openai_api_request(content)
+def fetch_content_and_run_summary()->None:
+    result_json = fetch_todays_results()
+    if not result_json:
+        append_to_log(log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] No results found for today")
+        run_sumarizing_threads() #Summarizeing each news individually
+        if thread_result:
+            push_results_to_db(thread_result, "Result")
+            append_to_log(log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] Successfully pushed summarized results to MongoDB")
+        else:
+            append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] No thread_result found, nothing to push to MongoDB")
+    else: #Summarizing the whole thing
+        append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Result JSON length: {len(result_json)}")
+        append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Result : {result_json}")
+        result_length = len(result_json)
+        json_parts = []
+        if result_length > 256000:
+            # Split the JSON string into two halves
+            middle = result_length // 2
+            json_parts.append(result_json[:middle])
+            json_parts.append(result_json[middle:])
+        else:
+            json_parts.append(result_json)
+        
+        for json_part in json_parts:
+            content=f"""Please analyze this news data and create:
+            1. Key bullet points for each category
+            2. Important trends or patterns
+            3. A brief executive summary
+            4. Highlight any critical developments
+            Data: {json_part}"""
+            summary[json_part] = openai_api_request(content)
 
 # if bool(summary):
-print(" THERE is SUMMARY")
-# push_results_to_db(summary, "Summary")
-formatted_result= {}
-today_date = datetime.today().strftime('%Y-%m-%d')
-for _, summary_response in summary.items():
-            # Extract the actual summary text from the OpenAI response
-            summary_text = summary_response.data[0].content[0].text.value
-            formatted_result[today_date] = summary_text
-push_results_to_db(formatted_result, "Summary")
-append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Successfully pushed summary to MongoDB")
+def check_summary_present()-> None:
+    print(" THERE is SUMMARY")
+    # push_results_to_db(summary, "Summary")
+    formatted_result= {}
+    today_date = datetime.today().strftime('%Y-%m-%d')
+    for _, summary_response in summary.items():
+                # Extract the actual summary text from the OpenAI response
+                summary_text = summary_response.data[0].content[0].text.value
+                formatted_result[today_date] = summary_text
+    push_results_to_db(formatted_result, "Summary")
+    append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Successfully pushed summary to MongoDB")
 # else:   
 #     append_to_log(log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] No summary data to push to MongoDB")
 # if result_json:
