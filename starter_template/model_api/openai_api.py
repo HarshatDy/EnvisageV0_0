@@ -3,11 +3,11 @@ import os
 import json
 import time
 from dotenv import load_dotenv
-from web_scrapper_api import get_links_and_content_from_page
-from mongo import db
+from .web_scrapper_api import get_links_and_content_from_page
+from .mongo import db
 from datetime import datetime
 from threading import Thread, Lock
-from logging_scripts import *
+from .logging_scripts import *
 
 
 
