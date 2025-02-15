@@ -2,18 +2,15 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import os
 import openai
-from .model_api import openai_api as api, file_operations as fo 
+from .model_api import openai_api as api
+from .model_api.mongo import db
 from . import urls 
-
+from datetime import datetime
 # For managing generated pages
 generated_pages = []
 for filename in os.listdir(os.path.join((os.path.dirname(os.path.abspath(__file__))), "templates")):
     if filename.endswith(".html"):
         generated_pages.append(filename)
-
-
-
-
 
 """
 This module contains views for the Envisage application.
@@ -27,8 +24,12 @@ Functions:
         Renders a generated HTML page based on the provided page name.
 """
 def homepage(request):
-    return render(request, 'homepage.html', {'pages': generated_pages})
-
+    openai_mongo = db['openai_api']
+    date = datetime.today().strftime('%Y-%m-%d')
+    query = openai_mongo.find({f"Summary.{date}": {"$exists": True}})
+    for summary in query: 
+        news_content = summary['Summary']['2025-02-15']['2025-02-15']
+        return render(request, 'homepage.html', {'news_content': news_content})
 
 
 """

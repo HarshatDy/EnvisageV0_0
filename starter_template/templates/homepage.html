@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    {% load custom_filters %}
+    
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -72,25 +75,27 @@
         ul li a:hover {
             color: #2980b9;
         }
+        
+        .news-content {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Generate a New Page</h1>
-        <form action="{% url 'generate_html_page' %}" method="POST">
-            {% csrf_token %}
-            <div class="input-container">
-                <input type="text" name="page_name" placeholder="Enter Page Name" required>
-            </div>
-            <button type="submit">Generate</button>
-        </form>
+    {% include 'header.html' %}
 
-        <h2>Generated Pages:</h2>
-        <ul>
-            {% for page in pages %}
-                <li><a href="{% url 'show_generated_page' page %}">{{ page }}</a></li>
-            {% endfor %}
-        </ul>
+    <div class="container">
+ 
+        {% if news_content %}
+            <div class="news-content">
+                {{ news_content|convert_markup|safe }}
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>
