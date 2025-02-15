@@ -1,1 +1,0 @@
-[OPENAI][DBG][11:32:19] Fetching today's results from MongoDB: <pymongo.synchronous.cursor.Cursor object at 0x00000214CC207E00>

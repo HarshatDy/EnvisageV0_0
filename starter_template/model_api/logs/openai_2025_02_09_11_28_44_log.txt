@@ -1,1 +1,0 @@
-[OPENAI][DBG][11:28:44] Query: {'Result.2025-02-09': {'$exists': True}}
