@@ -1,7 +1,7 @@
 import anthropic
 from dotenv import load_dotenv
 import os
-from web_scrapper_api import get_links_and_content_from_page
+from .web_scrapper_api import get_links_and_content_from_page
 from .mongo import db
 from datetime import datetime
 from .logging_scripts import create_log_file, append_to_log

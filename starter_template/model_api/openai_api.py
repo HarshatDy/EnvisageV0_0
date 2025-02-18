@@ -48,40 +48,38 @@ class OpenAiAPI:
 # print(os.getenv('PROJ'))
 
     def get_news_src(self):
-        news_sources = {
+      news_sources = {
             "Climate Technology": [
-                "https://www.climatechangenews.com/",
-                "https://insideclimatenews.org/",
-                "https://www.technologyreview.com/topic/climate-change/",
-                "https://www.bloomberg.com/green",
-                "https://www.theguardian.com/environment/climate-crisis"
+                "https://www.thehindu.com/sci-tech/energy-and-environment/",
+                "https://www.ndtv.com/topic/climate-change",
+                "https://www.indiatoday.in/india/climate-change",
+                "https://www.business-standard.com/climate-change",
+                "https://www.deccanherald.com/specials/insight/climate-change-618973.html"
             ],
             "Government Politics": [
-                "https://www.politico.com/news/climate-energy",
-                "https://www.bbc.com/news/politics",
-                "https://www.reuters.com/business/environment/",
-                "https://www.nytimes.com/section/climate",
-                "https://www.ft.com/climate-capitalism",
-                "https://www.eenews.net/"
+                "https://www.thehindu.com/news/national/politics/",
+                "https://www.ndtv.com/india-politics",
+                "https://www.timesofindia.indiatimes.com/india",
+                "https://www.indiatoday.in/india",
+                "https://www.tribuneindia.com/news/punjab/politics",
+                "https://www.eenaduindia.com/"
             ],
             "Travel Industry": [
-                "https://skift.com/",
-                "https://www.cnbc.com/travel/",
-                "https://www.travelweekly.com/",
-                "https://www.cntraveler.com/story-type/news",
-                "https://www.iata.org/en/pressroom/",
-                "https://www.phocuswire.com/"
+                "https://www.indiatoday.in/travel",
+                "https://www.businessinsider.in/business/news/india-travel",
+                "https://www.hindustantimes.com/india-news",
+                "https://www.moneycontrol.com/news/travel/",
+                "https://www.financialexpress.com/industry/tourism-travel-industry-news/"
             ],
             "Stock Market": [
-                "https://www.bloomberg.com/markets",
-                "https://www.ft.com/markets",
-                "https://www.cnbc.com/markets/",
-                "https://www.wsj.com/market-data",
-                "https://www.marketwatch.com/investing/esg",
-                "https://www.morningstar.com/lp/sustainable-investing"
+                "https://www.moneycontrol.com/",
+                "https://www.bloombergquint.com/markets",
+                "https://www.business-standard.com/markets",
+                "https://economictimes.indiatimes.com/markets",
+                "https://www.moneycontrol.com/markets/"
             ]
         }
-        return news_sources
+      return news_sources
 
 
 
