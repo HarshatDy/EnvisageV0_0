@@ -54,28 +54,28 @@ class OpenAiAPI:
                 "https://www.ndtv.com/topic/climate-change",
                 "https://www.indiatoday.in/india/climate-change",
                 "https://www.business-standard.com/climate-change",
-                "https://www.deccanherald.com/specials/insight/climate-change-618973.html"
+                # "https://www.deccanherald.com/specials/insight/climate-change-618973.html"
             ],
             "Government Politics": [
                 "https://www.thehindu.com/news/national/politics/",
                 "https://www.ndtv.com/india-politics",
-                "https://www.timesofindia.indiatimes.com/india",
+                # "https://www.timesofindia.indiatimes.com/india",
                 "https://www.indiatoday.in/india",
-                "https://www.tribuneindia.com/news/punjab/politics",
+                # "https://www.tribuneindia.com/news/punjab/politics",
                 "https://www.eenaduindia.com/"
             ],
             "Travel Industry": [
                 "https://www.indiatoday.in/travel",
                 "https://www.businessinsider.in/business/news/india-travel",
-                "https://www.hindustantimes.com/india-news",
+                # "https://www.hindustantimes.com/india-news",
                 "https://www.moneycontrol.com/news/travel/",
                 "https://www.financialexpress.com/industry/tourism-travel-industry-news/"
             ],
             "Stock Market": [
-                "https://www.moneycontrol.com/",
+                # "https://www.moneycontrol.com/",
                 "https://www.bloombergquint.com/markets",
-                "https://www.business-standard.com/markets",
-                "https://economictimes.indiatimes.com/markets",
+                # "https://www.business-standard.com/markets",
+                # "https://economictimes.indiatimes.com/markets",
                 "https://www.moneycontrol.com/markets/"
             ]
         }
@@ -87,7 +87,7 @@ class OpenAiAPI:
     def openai_api_request(self, txt):
         
         append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Recieved OPENAI request for content {txt}")
-        thread = self.client.beta.threads.create()  # Create a new thread
+        thread = self.client.beta.threads.create()  # Create a new thread Abstract this thread 
         # print(f"Thread created: {thread.id}")  # Debugging line
         message = self.client.beta.threads.messages.create(  # Create a new message in the thread
             thread_id=thread.id,
@@ -238,7 +238,7 @@ class OpenAiAPI:
 
     def check_news_in_db(self):
         openai_links_db = db['openai_api'] # Add to constructor
-        today_date = datetime.today().strftime('%Y-%m-%d')
+        today_date = datetime.today().strftime('%Y-%m-%d') #add to constructor
         print(today_date)
         append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Checking news for date: {today_date}")
         
@@ -261,7 +261,7 @@ class OpenAiAPI:
         if not collected_news:
             # print("No news data found for today in the database.")
             append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] No news data found for today in the database")
-
+            return None
         return collected_news
 
 # print(f" NEWS are present {check_news_in_db()}")
@@ -375,12 +375,12 @@ class OpenAiAPI:
             json_parts =  []
 
             if result_length > 256000:
-                json_parts = [result_json[i:i+255733] for i in range(0, len(result_json), 255733)]
+                json_parts = [result_json[i:i+255533] for i in range(0, len(result_json), 255533)]
             else:
                 json_parts.append(result_json)
             
             for json_part in json_parts:
-                content=f"""Please analyze this news data and create:
+                content=f"""Please analyze this news data and create a summary of 1000 words:
                 1. Key bullet points for each category
                 2. Important trends or patterns
                 3. A brief executive summary
