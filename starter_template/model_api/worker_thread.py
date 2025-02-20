@@ -1,8 +1,12 @@
 import threading
-from .openai_api import  OpenAiAPI
 # from claude_api import start_claude_assistant
 import time
-from .logging_scripts import create_log_file, append_to_log
+try:
+    from .logging_scripts import create_log_file, append_to_log
+    from .openai_api import  OpenAiAPI
+except ImportError:
+    from logging_scripts import create_log_file, append_to_log
+    from openai_api import OpenAiAPI
 from datetime import datetime
 
 client = OpenAiAPI()
@@ -34,7 +38,8 @@ def check_summary():
 #     start_claude_assistant()
 #     print("Claude Completed : Check DB for updated result!")
 
-def run_worker_thread():
+# def run_worker_thread():
+if __name__ == "__main__":
     log_file =f"log_{time.strftime('%Y_%m_%d')}_threading.txt"
     create_log_file(log_file)
     nws_flg, rslt_flg, sum_flg = True, True, True
