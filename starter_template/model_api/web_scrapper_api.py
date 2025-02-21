@@ -3,7 +3,10 @@ from bs4 import BeautifulSoup
 # from openai_api import news_sources
 from urllib.parse import urljoin
 from typing import List, Set
-from .logging_scripts import *
+try :
+    from .logging_scripts import *
+except ImportError:
+    from logging_scripts import *
 from datetime import datetime
 
 

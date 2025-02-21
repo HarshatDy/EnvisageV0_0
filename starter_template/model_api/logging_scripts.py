@@ -19,7 +19,7 @@ def create_log_file(filename):
     print(f"this is thhe log_path {log_path}")
     if not os.path.exists(log_path):
         try:
-            with open(log_path, 'w') as file:
+            with open(log_path, 'w', encoding='utf-8') as file:
                 pass  # Just create the file
         except Exception as e:
             print(f"Error creating log file: {str(e)}")
@@ -35,7 +35,7 @@ def append_to_log(filename, content):
     log_dir = 'logs'
     log_path = os.path.join(log_dir, filename)
     try:
-        with open(log_path, 'a') as file:
+        with open(log_path, 'a', encoding='utf-8') as file:
             file.write(f"{content}\n")
     except Exception as e:
         print(f"Error appending to log file: {str(e)}")

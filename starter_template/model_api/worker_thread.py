@@ -1,8 +1,12 @@
 import threading
-from openai_api import  OpenAiAPI
-from claude_api import start_claude_assistant
+# from claude_api import start_claude_assistant
 import time
-from logging_scripts import create_log_file, append_to_log
+try:
+    from .logging_scripts import create_log_file, append_to_log
+    from .openai_api import  OpenAiAPI
+except ImportError:
+    from logging_scripts import create_log_file, append_to_log
+    from openai_api import OpenAiAPI
 from datetime import datetime
 
 client = OpenAiAPI()
@@ -10,7 +14,7 @@ client = OpenAiAPI()
 def get_openai_client():
     return client
 
-def run_openai_assistant(client):
+def run_openai_assistant():
     # openai_api = get_openai_client()
     client.start_openai_assistant()
     print("OpenAI Completed : Check DB for updated result!")
@@ -34,6 +38,7 @@ def check_summary():
 #     start_claude_assistant()
 #     print("Claude Completed : Check DB for updated result!")
 
+# def run_worker_thread():
 if __name__ == "__main__":
     log_file =f"log_{time.strftime('%Y_%m_%d')}_threading.txt"
     create_log_file(log_file)
@@ -42,9 +47,12 @@ if __name__ == "__main__":
     news_list = check_news()
     for i in news_list:
         if i:
+            print(f"News present {i}")
             nws_flg = True
         else :
+            print(f"News not present {i}")
             nws_flg = False
+            break 
 
     if not nws_flg :
         append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] NEWS CHECK FAILED")

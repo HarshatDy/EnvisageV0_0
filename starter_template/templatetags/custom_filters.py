@@ -9,7 +9,7 @@ def convert_markup(text):
         return ""
     
     # Convert Markdown headers
-    # text = re.sub(r'### (.*?)\n', r'<h3>\1</h3>', text)
+    text = re.sub(r'### (.*?)\n', r'<h3>\1</h3>', text)
     
     # Convert bold text
     text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)

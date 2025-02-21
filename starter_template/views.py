@@ -4,8 +4,10 @@ import os
 import openai
 from .model_api import openai_api as api
 from .model_api.mongo import db
+from .model_api.worker_thread import *
 from . import urls 
 from datetime import datetime
+from threading import Thread
 # For managing generated pages
 generated_pages = []
 for filename in os.listdir(os.path.join((os.path.dirname(os.path.abspath(__file__))), "templates")):
@@ -24,12 +26,15 @@ Functions:
         Renders a generated HTML page based on the provided page name.
 """
 def homepage(request):
+    chk_news_content()
     openai_mongo = db['openai_api']
     date = datetime.today().strftime('%Y-%m-%d')
     query = openai_mongo.find({f"Summary.{date}": {"$exists": True}})
     for summary in query: 
-        news_content = summary['Summary']['2025-02-15']['2025-02-15']
+        news_content = summary['Summary'][date][date]
         return render(request, 'homepage.html', {'news_content': news_content})
+    return render(request, 'homepage.html', {'news_content': 'No news content available'})
+
 
 
 """
@@ -58,8 +63,8 @@ def get_page(request):
     # filename  = request.GET.get('page_name') ## Get the content from POST request.
     # print(f"{path} {page_name} THIS IS THE OUTPUT PUT") ## print the file directory and the file name
 
-    fo.create_file(path, page_name)
-    fo.write_file(path, page_name, content.data[0].content[0].text.value)
+    # fo.create_file(path, page_name)
+    # fo.write_file(path, page_name, content.data[0].content[0].text.value)
 
     generated_pages.append(page_name+".html")
 
@@ -79,3 +84,10 @@ def get_page(request):
 def show_generated_page(request, page_name):
     return render(request, f'{page_name}', {'page_name' :page_name})
 
+
+
+def chk_news_content():
+    background_thread = Thread(target=run_worker_thread, daemon=True)
+    background_thread.start()
+    print(f"Background thread started at {datetime.today().strftime('%H:%M:%S')}")  
+    return None
