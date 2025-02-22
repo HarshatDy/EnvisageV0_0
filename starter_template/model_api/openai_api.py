@@ -3,11 +3,20 @@ import os
 import json
 import time
 from dotenv import load_dotenv
-from .web_scrapper_api import get_links_and_content_from_page
-from .mongo import db
+# from .web_scrapper_api import get_links_and_content_from_page
+# from .mongo import db
 from datetime import datetime
 from threading import Thread, Lock
-from .logging_scripts import *
+# from .logging_scripts import *
+
+try:
+    from .web_scrapper_api import get_links_and_content_from_page
+    from .mongo import db
+    from .logging_scripts import *
+except ImportError:
+    from web_scrapper_api import get_links_and_content_from_page
+    from mongo import db
+    from logging_scripts import *
 
 
 
@@ -30,6 +39,9 @@ class OpenAiAPI:
         self.summary={}
         self.db = db['openai_api']  # change everywhere in the code
         self.today_date = datetime.today().strftime('%Y-%m-%d') # Fix this
+        self.news_thread=self.client.beta.threads.create()
+        self.grd_thread=self.client.beta.threads.create()
+        self.MAX_RETRY = 5
 
 
     # def openai_log_init(self,log_file):
@@ -51,9 +63,9 @@ class OpenAiAPI:
       news_sources = {
             "Climate Technology": [
                 "https://www.thehindu.com/sci-tech/energy-and-environment/",
-                "https://www.ndtv.com/topic/climate-change",
-                "https://www.indiatoday.in/india/climate-change",
-                "https://www.business-standard.com/climate-change",
+                # "https://www.ndtv.com/topic/climate-change",
+                # "https://www.indiatoday.in/india/climate-change",
+                # "https://www.business-standard.com/climate-change",
                 # "https://www.deccanherald.com/specials/insight/climate-change-618973.html"
             ],
             "Government Politics": [
@@ -86,8 +98,8 @@ class OpenAiAPI:
 
     def openai_api_request(self, txt):
         
-        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Recieved OPENAI request for content {txt}")
-        thread = self.client.beta.threads.create()  # Create a new thread Abstract this thread 
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][openai_api_request] Recieved OPENAI request for content {txt}")
+        thread = self.news_thread  
         # print(f"Thread created: {thread.id}")  # Debugging line
         message = self.client.beta.threads.messages.create(  # Create a new message in the thread
             thread_id=thread.id,
@@ -102,10 +114,10 @@ class OpenAiAPI:
         # print(f"Run created: {run.id}")  # Debugging line
         run = self.wait_on_run( run, thread)
         if (run.status == 'failed' or run.status == 'stopped'):
-            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] Failed run : {run}")
+            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][openai_api_request] Failed run : {run}")
             raise Exception(f"Run failed or stopped with error: {run}")
         while run.status == 'requires_action':  # Handle required actions if the run status is 'requires_action'
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Tool name: {run.required_action.submit_tool_outputs.tool_calls[0].id}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][openai_api_request] Tool name: {run.required_action.submit_tool_outputs.tool_calls[0].id}")
             # print(f"Tool name {run.required_action.submit_tool_outputs.tool_calls[0].id}")  # Debugging line
             run = self.client.beta.threads.runs.submit_tool_outputs(
                 thread_id=thread.id,
@@ -117,7 +129,7 @@ class OpenAiAPI:
         messages = self.client.beta.threads.messages.list(
             thread_id=thread.id, order='asc', after=message.id,
         )
-        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Messages retrieved from thread: {messages}")
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][openai_api_request] Messages retrieved from thread: {messages}")
         # print(f"Messages: {messages}")  # Debugging line
         return messages
 
@@ -125,14 +137,14 @@ class OpenAiAPI:
 
     def wait_on_run(self, run, thread):
         while run.status=='queued' or run.status=='in_progress':
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Run status: {run.status}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][wait_on_run] Run status: {run.status}")
             # print(f"Run status: {run.status}")  # Debugging line
             run = self.client.beta.threads.runs.retrieve(
                 thread_id=thread.id,
                 run_id=run.id,
             )
             time.sleep(0.5)
-        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Run status after completion: {run.status}, Run ID: {run.id}")
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][wait_on_run] Run status after completion: {run.status}, Run ID: {run.id}")
         # print(f"Run status after completion: {run.status}")  # Debugging line
         return run
     
@@ -191,20 +203,24 @@ class OpenAiAPI:
     def start_openai_assistant(self)-> None:
         openai_links_db = db['openai_api']  # Add to constructor
         
-        append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] Starting OpenAI Assistant")
+        append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Starting OpenAI Assistant")
         news_sources = self.get_news_src()
+        links = {}
         for key in news_sources:
-            links={}
+            if key not in links:
+                links[key] = {}
             # print(f"News for {key}")
             for source in news_sources[key]:
                 # print(f"Getting news from {source}")
-                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] Getting news from {source}")
+                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Getting news from {source}")
                 try:
-                    links[source] = get_links_and_content_from_page(source)
+                    links[key][source] = get_links_and_content_from_page(source)
+                    append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Successfully extracted news from {source}")
+                    append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] *****************************************************")
                 except Exception as e:
-                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] ************************ERROR************************")
-                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] Failed to extract news from {source}: {e}")
-                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] *****************************************************")
+                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] ************************ERROR************************")
+                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Failed to extract news from {source}: {e}")
+                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] *****************************************************")
                     # print("************************ERROR************************")
                     # print(f"Failed to extract news from {source} with error: {e}")
                     # print("*****************************************************")
@@ -213,17 +229,22 @@ class OpenAiAPI:
             # # print(links)
             # print("--------------------------------------------")
             today_date = datetime.today().strftime('%Y-%m-%d')
+            print(" IT'S HEREEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Before processing Processing category: {links} and length {len(links)}")
+            links = self.grd_nws(links)
+            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] After processing Processing category: {links} and length {len(links)}")
             try:
-                openai_links_db.insert_one({today_date:{key: links}})
-                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] Successfully inserted data for {key} into MongoDB")
+                openai_links_db.insert_one({today_date:{key: links[key]}})
+                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Successfully inserted data for {key} into MongoDB")
             except Exception as e:
-                append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] Failed to insert data into MongoDB: {e}")
+                append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Failed to insert data into MongoDB: {e}")
                 print(f"Failed to insert data into MongoDB: {e}")
             # openai_links_db.insert_one({today_date:{key: links}})
         # print("News retrieval complete")
-        append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] News retrieval complete")
+        append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] News retrieval complete")
         # client.close()
         # print(links)
+        # exit(0)
         return None
 
 
@@ -240,14 +261,14 @@ class OpenAiAPI:
         openai_links_db = db['openai_api'] # Add to constructor
         today_date = datetime.today().strftime('%Y-%m-%d') #add to constructor
         print(today_date)
-        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Checking news for date: {today_date}")
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_news_in_db] Checking news for date: {today_date}")
         
         news_data_cursor = openai_links_db.find({today_date: {"$exists": True}})
         collected_news = {}
         
         for news_data in news_data_cursor:
             # print("ITS HERE")
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Found news data in database {news_data}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_news_in_db] Found news data in database {news_data}")
             
             for date, categories in news_data.items():
                 if date == "_id":
@@ -257,10 +278,9 @@ class OpenAiAPI:
                         collected_news[category] = {}
                     for source, content in sources.items():
                         collected_news[category][source] = content
-                        
         if not collected_news:
             # print("No news data found for today in the database.")
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] No news data found for today in the database")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_news_in_db] No news data found for today in the database")
             return None
         return collected_news
 
@@ -270,17 +290,17 @@ class OpenAiAPI:
         for source, content in sources.items():
             # print(f"Processing news from {source} in category {category}")
             for link, details in content.items():
-                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] LINK from the news: {link}")
+                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][process_category] LINK from the news: {link}")
                 # write_to_file(str(details), "details.txt")
                 if len(details) != 2:
-                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] Skipping link {link} as it has insufficient details")
+                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][process_category] Skipping link {link} as it has insufficient details")
                     print(f"Skipping link {link} as it has insufficient details")
                     continue
                 title, news_content = details
                 # exit()
-                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Processing summary for {link} with title: {title}")
+                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][process_category] Processing summary for {link} with title: {title}")
                 summary = self.openai_api_request(f"Summarize the news from {link} with the title {title} and content {news_content}")   # Neeeds better prompt
-                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Summary result: {summary.data[0].content[0].text.value}")
+                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][process_category] Summary result: {summary.data[0].content[0].text.value}")
                 # print(f"Summary for {link}: {summary.data[0].content[0].text.value}")
                 if category not in result:
                     result[category] = {}
@@ -293,7 +313,7 @@ class OpenAiAPI:
                     "summary": summary.data[0].content[0].text.value
                 }) # Needs refactoring and change of structure
                 with self.thread_lock:
-                    append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Thread acquired lock for {result[category]}") # Check with result.category.title
+                    append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][process_category] Thread acquired lock for {result[category]}") # Check with result.category.title
                     self.thread_result[category] = result
                 # write_to_file(result, "result.txt")
 
@@ -302,13 +322,13 @@ class OpenAiAPI:
         self.thread_result.clear()
         content = self.check_news_in_db()
         if not content:
-            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] No content found in database")
+            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][run_sumarizing_threads] No content found in database")
             return None
         for category, sources in content.items():
             thread = Thread(target=self.process_category, args=(category, sources))
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Starting thread")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][run_sumarizing_threads] Starting thread")
             threads.append(thread)
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Starting thread for {category} with {thread.ident}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][run_sumarizing_threads] Starting thread for {category} with {thread.ident}")
             thread.start()
             # print("Starting thread")
             # print(f"Starting thread for {category} with {thread.ident}" )
@@ -337,19 +357,19 @@ class OpenAiAPI:
         # print(f"[DEBUG] Query: {query}")
         results_cursor = openai_links_db.find(query)
         if not results_cursor:
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] No results found in MongoDB for today's date")
-        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Fetching today's results from MongoDB: {results_cursor}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_todays_results] No results found in MongoDB for today's date")
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_todays_results] Fetching today's results from MongoDB: {results_cursor}")
         # print("executing loop now")
         result_json = None
         for result in results_cursor:
             # print("IN LOOP")
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Query result: {result['_id']}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_todays_results] Query result: {result['_id']}")
             # Convert ObjectId to string representation
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Processing result: {result['_id']}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_todays_results] Processing result: {result['_id']}")
             # print(result)
             result['_id'] = str(result['_id'])
             result_json =json.dumps(result, indent=4)
-        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Result JSON: {result_json}")
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_todays_results] Result JSON: {result_json}")
         return result_json
 
 
@@ -361,16 +381,16 @@ class OpenAiAPI:
     def fetch_content_and_run_summary(self)->None:  # Create checks to see if previous work has been completed before proceeding
         result_json = self.fetch_todays_results()
         if not result_json:
-            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}] No results found for today")
+            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] No results found for today")
             self.run_sumarizing_threads() #Summarizing each news individually
             if self.thread_result:
                 self.push_results_to_db(self.thread_result, "Result")
-                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}] Successfully pushed summarized results to MongoDB")
+                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Successfully pushed summarized results to MongoDB")
             else:
-                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] No thread_result found, nothing to push to MongoDB")
+                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] No thread_result found, nothing to push to MongoDB")
         else: #Summarizing the whole thing
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Result JSON length: {len(result_json)}")
-            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Result : {result_json}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Result JSON length: {len(result_json)}")
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Result : {result_json}")
             result_length = len(result_json)
             json_parts =  []
 
@@ -378,7 +398,6 @@ class OpenAiAPI:
                 json_parts = [result_json[i:i+255533] for i in range(0, len(result_json), 255533)]
             else:
                 json_parts.append(result_json)
-            
             for json_part in json_parts:
                 content=f"""Please analyze this news data and create a summary of 1000 words:
                 1. Key bullet points for each category
@@ -388,7 +407,7 @@ class OpenAiAPI:
                 Data: {json_part}"""
                 self.summary[json_part] = self.openai_api_request(content)
             if bool(self.summary):
-                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] SUMMARY IS PRESENT")
+                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] SUMMARY IS PRESENT")
                 print("Summary is present")
                 self.check_summary_present()
                 
@@ -404,7 +423,7 @@ class OpenAiAPI:
                     summary_text = summary_response.data[0].content[0].text.value
                     formatted_result[today_date] = summary_text
         self.push_results_to_db(formatted_result, "Summary")
-        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] Successfully pushed summary to MongoDB")
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_summary_present] Successfully pushed summary to MongoDB")
 
 
     def chk_news(self):
@@ -433,6 +452,107 @@ class OpenAiAPI:
         return False
 
 
+    def grd_nws(self, links):
+        news = links
+        summary = self.summary
+        new_links = []
+        result_links= []
+        if news and summary:
+            return None
+        elif news:
+            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][grd_nws] News is present, starting grading")
+            print("News is present start summary")
+            for category, value in list(news.items()):
+                for key in list(value.keys()):
+                    links_to_remove = []
+                    # for link in list(news[category][key].items()):
+                    step = int(len(list(news[category][key].items()))/self.MAX_RETRY)
+                    link_items = [ list(news[category][key].items())[j:j+step] for j in range(0, len(list(news[category][key].items())), step)]
+                    append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Links for processing: {link_items}")
+                    # link_part = [ links[j:j+step] for j in range(0, len(links), step)]
+                    print(f"Link part is {link_items}")
+                    # new_links = []
+                    for link_item in link_items :
+                        print("calling grading assistant")
+                        new_links.append((self.grding_assistant(f"""
+                            Is this news with title and content in list '{link_item}' relevant to category '{category}'? 
+                            If yes, return the structured data in the format: 
+                            [("https://www.example.com/article1", ["Article Title 1", "Article Content 1"]), ("https://www.example.com/article2", ["Article Title 2", "Article Content 2"])]
+                            If no, return an empty list [].
+                            """)).data[0].content[0].text.value)
+                        # messages = self.grding_assistant(f"Is this news with title {news[category][key][link][0]} and content {news[category][key][link][1]} relevant to category {category}? Remove the unwanted article and return the useful list of articles.")
+                        # grade = int(messages.data[0].content[0].text.value)
+                        # append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Grading result: {grade}")
+                    
+                    # If all links in a category are removed, remove the category
+                    # if not news[category][key]:
+                    #     news.pop(key)
+                    #     append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Removed empty category {key}")
+                        print(f"New links {new_links}")
+                        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing new_links: {new_links}")
+                    # Process new_links and structure into result_links
+                    result_links = {}
+                    for i in range(len(new_links)):
+                        try:
+                            # Convert string representation of list to actual list
+                            links_data = eval(new_links[i])
+                            if links_data:  # Only process if links_data is not empty
+                                if category not in result_links:
+                                    result_links[category] = {}
+                                if key not in result_links[category]:
+                                    result_links[category][key] = {}
+                                for link, content in links_data:
+                                    result_links[category][key][link] = content
+                        except Exception as e:
+                            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Error processing new_links: {e}")
+
+                    # print( f"Result links {result_links}")
+                    # return result_links if result_links else None
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] News refined, here's list of new news : {result_links}")
+        return result_links
+
+
+    # def grding_assistant():
+    def grding_assistant(self, txt):
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Creating message for grading: {txt}")
+        thread = self.grd_thread
+        message = self.client.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=txt
+        )
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Created message with ID: {message.id}")
+        run = self.client.beta.threads.runs.create(
+            thread_id=thread.id,
+            assistant_id='asst_yBgMEeLeT7DTFiBs1xo4MeLc'
+        )
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Created run with ID: {run.id}")
+        run = self.wait_on_run(run, thread)
+        if run.status == 'failed' or run.status == 'stopped' or run.status == 'expired':
+            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Run failed or stopped: {run}")
+            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Run failed, attempting retry")
+            retries = 0
+            while retries < self.MAX_RETRY:
+                run = self.client.beta.threads.runs.create(
+                    thread_id=thread.id,
+                    assistant_id='asst_yBgMEeLeT7DTFiBs1xo4MeLc'
+                )
+                run = self.wait_on_run(run, thread)
+                if run.status != 'failed' and run.status != 'stopped' and run.status != 'expired':
+                    break
+                retries += 1
+                append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Grading run failed: {run}")
+            # raise Exception(f"Grading run failed or stopped: {run}")
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Getting Message List")
+        messages = self.client.beta.threads.messages.list(
+            thread_id=thread.id, 
+            order='asc', 
+            after=message.id
+        )
+        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Returning messages")
+        return messages
+
+        # append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Grading messages: {messages}")
 # else:   
 #     append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}] No summary data to push to MongoDB")
 # if result_json:
