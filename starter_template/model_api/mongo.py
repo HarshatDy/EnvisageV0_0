@@ -1,6 +1,9 @@
 import pymongo
+from dotenv import load_dotenv
+import os
+load_dotenv()   
 
-url = "mongodb+srv://dhanayatharshat:envisagedb01@envisagedb01.7zmo7.mongodb.net/"
+url = os.getenv('MONGO_URL')
 
 client = pymongo.MongoClient(url)
 
