@@ -493,9 +493,9 @@ class OpenAiAPI:
         elif news:
             append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][grd_nws] News is present, starting grading")
             for category, value in list(news.items()):
-                for key in list(value.keys()):
-                    step = max(1, int(len(list(news[category][key].items()))/self.MAX_RETRY))
-                    link_items = [list(news[category][key].items())[j:j+step] for j in range(0, len(list(news[category][key].items())), step)]
+                for top_url in list(value.keys()):
+                    step = max(1, int(len(list(news[category][top_url].items()))/self.MAX_RETRY))
+                    link_items = [list(news[category][top_url].items())[j:j+step] for j in range(0, len(list(news[category][top_url].items())), step)]
                     append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing {len(link_items)} batches for {category}")
                     
                     for link_item in link_items:
@@ -525,10 +525,10 @@ class OpenAiAPI:
                                 if cat not in result_links:
                                     result_links[cat] = {}
                                 if articles:  # Only process if there are articles
-                                    if key not in result_links[cat]:
-                                        result_links[cat][key] = {}
+                                    if top_url not in result_links[cat]:
+                                        result_links[cat][top_url] = {}
                                     for article_url, content in articles:
-                                        result_links[cat][key][article_url] = content
+                                        result_links[cat][top_url][article_url] = content
                             
                         except Exception as e:
                             append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Error processing batch: {str(e)}")
