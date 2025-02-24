@@ -39,9 +39,11 @@ class OpenAiAPI:
         self.summary={}
         self.db = db['openai_api']  # change everywhere in the code
         self.today_date = datetime.today().strftime('%Y-%m-%d') # Fix this
+        # self.today_date = '2025-02-12' #Debugging
         self.news_thread=self.client.beta.threads.create()
         self.grd_thread=self.client.beta.threads.create()
-        self.MAX_RETRY = 5
+        self.MAX_RETRY = 0
+        self.MAX_BATCHES = 5
 
 
     # def openai_log_init(self,log_file):
@@ -70,28 +72,44 @@ class OpenAiAPI:
             ],
             "Government Politics": [
                 "https://www.thehindu.com/news/national/politics/",
-                "https://www.ndtv.com/india-politics",
+                # "https://www.ndtv.com/india-politics",
                 # "https://www.timesofindia.indiatimes.com/india",
-                "https://www.indiatoday.in/india",
+                # "https://www.indiatoday.in/india",
                 # "https://www.tribuneindia.com/news/punjab/politics",
-                "https://www.eenaduindia.com/"
+                # "https://www.eenaduindia.com/"
             ],
             "Travel Industry": [
                 "https://www.indiatoday.in/travel",
-                "https://www.businessinsider.in/business/news/india-travel",
+                # "https://www.businessinsider.in/business/news/india-travel",
                 # "https://www.hindustantimes.com/india-news",
-                "https://www.moneycontrol.com/news/travel/",
-                "https://www.financialexpress.com/industry/tourism-travel-industry-news/"
+                # "https://www.moneycontrol.com/news/travel/",
+                # "https://www.financialexpress.com/industry/tourism-travel-industry-news/"
             ],
             "Stock Market": [
                 # "https://www.moneycontrol.com/",
                 "https://www.bloombergquint.com/markets",
                 # "https://www.business-standard.com/markets",
                 # "https://economictimes.indiatimes.com/markets",
-                "https://www.moneycontrol.com/markets/"
+                # "https://www.moneycontrol.com/markets/"
             ]
         }
       return news_sources
+
+
+
+    def get_categories(self):
+        news_categories = {
+        "Politics": [], "Business": [], "Economy": [], "Finance": [], "Health": [], "Science": [], "Technology": [], 
+        "Environment": [], "Education": [], "Sports": [], "Entertainment": [], "Culture": [], "Lifestyle": [], "Travel": [], 
+        "Food": [], "Fashion": [], "Art": [], "Music": [], "Film": [], "Television": [], "Theater": [], "Books": [], 
+        "Automotive": [], "Real Estate": [], "Law": [], "Crime": [], "Public Safety": [], "Weather": [], "Natural Disasters": [], 
+        "Space": [], "Agriculture": [], "Energy": [], "Transportation": [], "Military": [], "International Affairs": [], 
+        "Human Rights": [], "Social Issues": [], "Religion": [], "Philanthropy": [], "Technology Innovations": [], 
+        "Cybersecurity": [], "Artificial Intelligence": [], "Blockchain": [], "Startups": [], "Investments": [], 
+        "Cryptocurrency": [], "Economics": [], "Trade": [], "Labor": [], "Consumer Affairs": [], "Public Health": [], 
+        "Mental Health": [], "Nutrition": [], "Fitness": []
+        }
+        return news_categories
 
 
 
@@ -159,87 +177,56 @@ class OpenAiAPI:
 
 
 
-# def chat_with_function_calling(user_message: str):
-
-#     response = client.ChatCompletion.create(
-#         model="gpt-4-turbo",
-#         messages=[{"role": "user", "content": user_message}],
-#         functions=functions,
-#         function_call="auto",
-#     )
-
-#     response_message = response["choices"][0]["message"]
-
-#     if response_message.get("function_call"):
-#         function_name = response_message["function_call"]["name"]
-#         function_args = json.loads(response_message["function_call"]["arguments"])
-#         if function_name == "fetch_web_data":
-#             function_response = fetch_web_data(**function_args)
-#             return function_response
-    
-#     return response_message["content"]
-
-# # Example usage
-# print(chat_with_function_calling("Get data from https://www.moneycontrol.com/technology/what-is-googleyness-google-ceo-sundar-pichai-finally-explains-what-it-means-for-company-article-12895142.html"))
-
-
-# new_list = []
-
-# def get_todays_news() -> None:
-#     for key in news_sources:
-#         print(f"News for {key}")
-#         for source in news_sources[key]:
-#             print(f"Getting news from {source}")
-#             response = openai_api_request(f"Get today's news from {source} in 350 words")
-#             if response:
-#                 new_list.append(response.data[0].content[0].text.value)
-#                 print(response.data[0].content[0].text.value)
-#             else:
-#                 print("Failed to get news")
-#         print("\n\n")
-#     print("News retrieval complete")
-# get_todays_news()
-
     def start_openai_assistant(self)-> None:
         openai_links_db = db['openai_api']  # Add to constructor
         
         append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Starting OpenAI Assistant")
         news_sources = self.get_news_src()
         links = {}
-        for key in news_sources:
-            if key not in links:
-                links[key] = {}
-            # print(f"News for {key}")
-            for source in news_sources[key]:
-                # print(f"Getting news from {source}")
+        lock = self.thread_lock
+        result_grded_news = {}
+        
+        def process_lnks(category, sources):
+            nonlocal links    
+            # for category in news_sources:
+            if category not in links:
+                links[category] = {}
+            for source in sources:
                 append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Getting news from {source}")
                 try:
-                    links[key][source] = get_links_and_content_from_page(source)
+                    links[category][source] = get_links_and_content_from_page(source)
                     append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Successfully extracted news from {source}")
                     append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] *****************************************************")
                 except Exception as e:
                     append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] ************************ERROR************************")
                     append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Failed to extract news from {source}: {e}")
                     append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] *****************************************************")
-                    # print("************************ERROR************************")
-                    # print(f"Failed to extract news from {source} with error: {e}")
-                    # print("*****************************************************")
-            # print("\n\n")
-            # print("--------------------------------------------")
-            # # print(links)
-            # print("--------------------------------------------")
-            today_date = datetime.today().strftime('%Y-%m-%d')
+            # today_date = self.today_date  # Changed
             print(" IT'S HEREEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Before processing Processing category: {links} and length {len(links)}")
-            links = self.grd_nws(links)
-            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] After processing Processing category: {links} and length {len(links)}")
-            try:
-                openai_links_db.insert_one({today_date:{key: links[key]}})
-                append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Successfully inserted data for {key} into MongoDB")
-            except Exception as e:
-                append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Failed to insert data into MongoDB: {e}")
-                print(f"Failed to insert data into MongoDB: {e}")
-            # openai_links_db.insert_one({today_date:{key: links}})
+            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Before processing Processing category: {links[category]} and length {len(links[category])} and for category {category}")
+            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Thread ID for {category}: {thread.ident}")
+            if not category in result_grded_news:
+                result_grded_news[category] = []
+            with lock:
+                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Thread {thread.ident} acquired lock for {category}")
+                result_grded_news[category] = self.grd_nws(links[category], category)
+            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] After processing Processing category: {result_grded_news[category]} and length {len(result_grded_news[category])} and for category {category}")
+            with lock:
+                try:
+                    openai_links_db.insert_one({self.today_date:{category: result_grded_news[category]}})  # Changed
+                    append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Successfully inserted data for {category} into MongoDB")
+                except Exception as e:
+                    append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Failed to insert data into MongoDB: {e}")
+                    print(f"Failed to insert data into MongoDB: {e}")
+                # openai_links_db.insert_one({today_date:{category: links}})
+        threads = []
+        for category, sources in news_sources.items():
+            thread = Thread(target=process_lnks, args=(category, sources))
+            threads.append(thread)
+            thread.start()
+            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] Starting thread for {category} with thread ID: {thread.ident}")
+        for thread in threads:
+            thread.join()
         # print("News retrieval complete")
         append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][start_openai_assistant] News retrieval complete")
         # client.close()
@@ -257,13 +244,25 @@ class OpenAiAPI:
         except Exception as e:
             print(f"Failed to write to file with error: {e}")
 
-    def check_news_in_db(self):
+    def check_news_in_db(self, preferred_category):
         openai_links_db = db['openai_api'] # Add to constructor
-        today_date = datetime.today().strftime('%Y-%m-%d') #add to constructor
+        today_date = self.today_date #add to constructor
         print(today_date)
         append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_news_in_db] Checking news for date: {today_date}")
+        if not preferred_category:
+            query = {self.today_date: {"$exists": True}}
+            # for news_data in news_data_cursor:
+            #     append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_news_in_db] News data from database: {news_data}")
+                # print(news_data)
+            # exit()
+        else:
+            query = {f"{today_date}.{preferred_category}": {"$exists": True}}
+            # for news_data in news_data_cursor:
+            #     append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_news_in_db] News data from database: {news_data}")
+            #     # print(news_data)
+            # exit()
+        news_data_cursor = openai_links_db.find(query)
         
-        news_data_cursor = openai_links_db.find({today_date: {"$exists": True}})
         collected_news = {}
         
         for news_data in news_data_cursor:
@@ -299,7 +298,7 @@ class OpenAiAPI:
                 title, news_content = details
                 # exit()
                 append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][process_category] Processing summary for {link} with title: {title}")
-                summary = self.openai_api_request(f"Summarize the news from {link} with the title {title} and content {news_content}")   # Neeeds better prompt
+                summary = self.openai_api_request(f"Summarize the news from {link} with the title {title} and content {news_content} with at least 100 words")   # Neeeds better prompt
                 append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][process_category] Summary result: {summary.data[0].content[0].text.value}")
                 # print(f"Summary for {link}: {summary.data[0].content[0].text.value}")
                 if category not in result:
@@ -344,7 +343,7 @@ class OpenAiAPI:
         # for doc in query:
         #     print("DOC id ",doc)
         # write_to_file(str([doc for doc in query]), "query.txt")
-        openai_links_db.insert_one({result_type:{datetime.today().strftime('%Y-%m-%d'): result}})
+        openai_links_db.insert_one({result_type:{self.today_date: result}})  # Changed
 
 
 # content = check_news_in_db()
@@ -352,8 +351,8 @@ class OpenAiAPI:
 # push_results_to_db(result)
     def fetch_todays_results(self):
         openai_links_db = db['openai_api']   # Add to constructor
-        today_date = datetime.today().strftime('%Y-%m-%d')
-        query = {f"Result.{today_date}": {"$exists": True}}
+        today_date = self.today_date
+        query = {f"Result.{self.today_date}": {"$exists": True}}  # Changed
         # print(f"[DEBUG] Query: {query}")
         results_cursor = openai_links_db.find(query)
         if not results_cursor:
@@ -417,11 +416,11 @@ class OpenAiAPI:
         print(" THERE is SUMMARY")
         # push_results_to_db(summary, "Summary")
         formatted_result= {}
-        today_date = datetime.today().strftime('%Y-%m-%d')
+        today_date = self.today_date
         for _, summary_response in self.summary.items():
                     # Extract the actual summary text from the OpenAI response
                     summary_text = summary_response.data[0].content[0].text.value
-                    formatted_result[today_date] = summary_text
+                    formatted_result[self.today_date] = summary_text  # Changed
         self.push_results_to_db(formatted_result, "Summary")
         append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_summary_present] Successfully pushed summary to MongoDB")
 
@@ -452,63 +451,63 @@ class OpenAiAPI:
         return False
 
 
-    def grd_nws(self, links):
+    def grd_nws(self, links, category):
         news = links
         summary = self.summary
         new_links = []
-        result_links= []
+        result_links = {}
+        categories = self.get_categories()
+        
         if news and summary:
             return None
         elif news:
-            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][grd_nws] News is present, starting grading")
-            print("News is present start summary")
-            for category, value in list(news.items()):
-                for key in list(value.keys()):
-                    links_to_remove = []
-                    # for link in list(news[category][key].items()):
-                    step = int(len(list(news[category][key].items()))/self.MAX_RETRY)
-                    link_items = [ list(news[category][key].items())[j:j+step] for j in range(0, len(list(news[category][key].items())), step)]
-                    append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Links for processing: {link_items}")
-                    # link_part = [ links[j:j+step] for j in range(0, len(links), step)]
-                    print(f"Link part is {link_items}")
-                    # new_links = []
-                    for link_item in link_items :
-                        print("calling grading assistant")
-                        new_links.append((self.grding_assistant(f"""
-                            Is this news with title and content in list '{link_item}' relevant to category '{category}'? 
-                            If yes, return the structured data in the format: 
-                            [("https://www.example.com/article1", ["Article Title 1", "Article Content 1"]), ("https://www.example.com/article2", ["Article Title 2", "Article Content 2"])]
-                            If no, return an empty list [].
-                            """)).data[0].content[0].text.value)
-                        # messages = self.grding_assistant(f"Is this news with title {news[category][key][link][0]} and content {news[category][key][link][1]} relevant to category {category}? Remove the unwanted article and return the useful list of articles.")
-                        # grade = int(messages.data[0].content[0].text.value)
-                        # append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Grading result: {grade}")
-                    
-                    # If all links in a category are removed, remove the category
-                    # if not news[category][key]:
-                    #     news.pop(key)
-                    #     append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Removed empty category {key}")
-                        print(f"New links {new_links}")
-                        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing new_links: {new_links}")
-                    # Process new_links and structure into result_links
-                    result_links = {}
-                    for i in range(len(new_links)):
-                        try:
-                            # Convert string representation of list to actual list
-                            links_data = eval(new_links[i])
-                            if links_data:  # Only process if links_data is not empty
-                                if category not in result_links:
-                                    result_links[category] = {}
-                                if key not in result_links[category]:
-                                    result_links[category][key] = {}
-                                for link, content in links_data:
-                                    result_links[category][key][link] = content
-                        except Exception as e:
-                            append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Error processing new_links: {e}")
+            append_to_log(self.log_file, f"[OPENAI][INF][{datetime.today().strftime('%H:%M:%S')}][grd_nws] News is present for category {category}")
+            # for category, value in list(news.items()):
+            for top_url in list(links.keys()):
+                step = max(1, int(len(list(news[top_url].items()))/self.MAX_BATCHES))
+                link_items = [list(news[top_url].items())[j:j+step] for j in range(0, len(list(news[top_url].items())), step)]
+                # with self.thread_lock:
+                append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing {len(link_items)} batches for {category}")
+                for link_item in link_items:
+                    try:
+                        grading_response = self.grding_assistant(f"""
+                            Analyze these articles: {link_item}
+                            Categorize each article into the most appropriate categories from this list: {list(categories.keys())}
+                            An article can belong to multiple categories if relevant.
+                            
+                            Return the result as a dictionary where:
+                            - Keys are category names from the provided categories list
+                            - Values are lists of tuples containing (article_url, [title, content])
+                            
+                            Only include articles that are relevant to at least one category.
+                            Format the response as a valid Python dictionary.
 
-                    # print( f"Result links {result_links}")
-                    # return result_links if result_links else None
-        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] News refined, here's list of new news : {result_links}")
+                            Only return the python dict and nothing else, avoid ``` and word python in the string
+                            """)
+                        
+                        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Received grading response: {grading_response.data[0].content[0].text.value}")
+                        
+                        categorized_data = eval(grading_response.data[0].content[0].text.value)
+                        append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Received categorization: {categorized_data}")
+                        
+                        # Merge the categorized data into result_links
+                        for cat, articles in categorized_data.items():
+                            if cat not in result_links:
+                                result_links[cat] = {}
+                            if articles:  # Only process if there are articles
+                                if top_url not in result_links[cat]:
+                                    result_links[cat][top_url] = {}
+                                for article_url, content in articles:
+                                    result_links[cat][top_url][article_url] = content
+                        
+                    except Exception as e:
+                        append_to_log(self.log_file, f"[OPENAI][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Error processing batch: {str(e)}")
+                        continue
+                
+            # Remove empty categories
+            result_links = {k: v for k, v in result_links.items() if v}
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Final categorized news: {result_links}")
+            
         return result_links
 
 
@@ -551,6 +550,7 @@ class OpenAiAPI:
         )
         append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Returning messages")
         return messages
+    
 
         # append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][grding_assistant] Grading messages: {messages}")
 # else:   
