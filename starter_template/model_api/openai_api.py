@@ -65,32 +65,32 @@ class OpenAiAPI:
       news_sources = {
             "Climate Technology": [
                 "https://www.thehindu.com/sci-tech/energy-and-environment/",
-                # "https://www.ndtv.com/topic/climate-change",
-                # "https://www.indiatoday.in/india/climate-change",
-                # "https://www.business-standard.com/climate-change",
-                # "https://www.deccanherald.com/specials/insight/climate-change-618973.html"
+                "https://www.ndtv.com/topic/climate-change",
+                "https://www.indiatoday.in/india/climate-change",
+                "https://www.business-standard.com/climate-change",
+                "https://www.deccanherald.com/specials/insight/climate-change-618973.html"
             ],
             "Government Politics": [
                 "https://www.thehindu.com/news/national/politics/",
-                # "https://www.ndtv.com/india-politics",
-                # "https://www.timesofindia.indiatimes.com/india",
-                # "https://www.indiatoday.in/india",
-                # "https://www.tribuneindia.com/news/punjab/politics",
-                # "https://www.eenaduindia.com/"
+                "https://www.ndtv.com/india-politics",
+                "https://www.timesofindia.indiatimes.com/india",
+                "https://www.indiatoday.in/india",
+                "https://www.tribuneindia.com/news/punjab/politics",
+                "https://www.eenaduindia.com/"
             ],
             "Travel Industry": [
                 "https://www.indiatoday.in/travel",
-                # "https://www.businessinsider.in/business/news/india-travel",
-                # "https://www.hindustantimes.com/india-news",
-                # "https://www.moneycontrol.com/news/travel/",
-                # "https://www.financialexpress.com/industry/tourism-travel-industry-news/"
+                "https://www.businessinsider.in/business/news/india-travel",
+                "https://www.hindustantimes.com/india-news",
+                "https://www.moneycontrol.com/news/travel/",
+                "https://www.financialexpress.com/industry/tourism-travel-industry-news/"
             ],
             "Stock Market": [
-                # "https://www.moneycontrol.com/",
+                "https://www.moneycontrol.com/",
                 "https://www.bloombergquint.com/markets",
-                # "https://www.business-standard.com/markets",
-                # "https://economictimes.indiatimes.com/markets",
-                # "https://www.moneycontrol.com/markets/"
+                "https://www.business-standard.com/markets",
+                "https://economictimes.indiatimes.com/markets",
+                "https://www.moneycontrol.com/markets/"
             ]
         }
       return news_sources
@@ -589,3 +589,33 @@ class OpenAiAPI:
     #         print("Summary:")
     #         print(content.data[0].content[0].text.value)
     #     print("\n\n")
+
+
+    def get_all_available_dates(self):
+        """
+        Returns a list of all unique dates available in the database
+        Dates are expected to be in the format 'YYYY-MM-DD'
+        """
+        openai_links_db = self.db
+        date_pattern = r"\d{4}-\d{2}-\d{2}"  # Regex pattern for YYYY-MM-DD format
+
+        # Aggregate pipeline to extract all field names that match the date pattern
+        pipeline = [
+            {"$project": {"documentFields": {"$objectToArray": "$$ROOT"}}},
+            {"$unwind": "$documentFields"},
+            {"$match": {"documentFields.k": {"$regex": date_pattern}}},
+            {"$group": {"_id": None, "dates": {"$addToSet": "$documentFields.k"}}},
+            {"$project": {"_id": 0, "dates": 1}}
+        ]
+
+        result = list(openai_links_db.aggregate(pipeline))
+
+        if result and 'dates' in result[0]:
+            dates = result[0]['dates']
+            # Sort dates chronologically
+            dates.sort(reverse=True)
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][get_all_available_dates] Found {len(dates)} dates in database")
+            return dates
+        else:
+            append_to_log(self.log_file, f"[OPENAI][DBG][{datetime.today().strftime('%H:%M:%S')}][get_all_available_dates] No dates found in database")
+            return []
