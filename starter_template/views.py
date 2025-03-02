@@ -7,6 +7,8 @@ from .model_api.mongo import db
 from .model_api.worker_thread import *
 from . import urls 
 from datetime import datetime
+import random
+
 from threading import Thread
 # For managing generated pages
 
@@ -26,12 +28,63 @@ Functions:
 def homepage(request):
     # chk_news_content()
     openai_mongo = db['openai_api']
-    date = datetime.today().strftime('%Y-%m-%d')
-    query = openai_mongo.find({f"Summary.{date}": {"$exists": True}})
-    for summary in query: 
-        news_content = summary['Summary'][date][date]
-        return render(request, 'homepage_1.html', {'news_content': news_content, 'pages': generated_pages})
-    return render(request, 'homepage_1.html', {'news_content': 'No news content available', 'pages': generated_pages})
+
+    pipeline = [
+        {"$match": {"Summary": {"$exists": True}}},
+        {"$project": {"_id": 0, "summaries": {"$objectToArray": "$Summary"}}},
+        {"$unwind": "$summaries"},
+        {"$project": {"date": "$summaries.k", "content": "$summaries.v"}}
+    ]
+    summary_docs = list(openai_mongo.aggregate(pipeline))
+    
+
+    if not summary_docs:
+        return render(request, 'homepage_1.html', {
+            'news_content': 'No news content available', 
+            'pages': generated_pages,
+            'summary_date': 'N/A'
+        })
+    
+    if len(summary_docs) == 1:
+        random_summary1 = random_summary2 = summary_docs[0]
+    else:
+        # Select two different summaries
+        indices = random.sample(range(len(summary_docs)), 2)
+        random_summary1 = summary_docs[indices[0]]
+        random_summary2 = summary_docs[indices[1]]
+    
+     # Process the first summary
+    summary_date1 = random_summary1['date']
+    try:
+        # If your structure is Summary -> date -> date -> content
+        news_content1 = random_summary1['content'][summary_date1][summary_date1]
+    except (KeyError, TypeError):
+        try:
+            # Alternative structure: Summary -> date -> content
+            news_content1 = random_summary1['content'][summary_date1]
+        except (KeyError, TypeError):
+            news_content1 = "Error retrieving content for this summary"
+    
+    # Process the second summary
+    summary_date2 = random_summary2['date']
+    try:
+        # If your structure is Summary -> date -> date -> content
+        news_content2 = random_summary2['content'][summary_date2][summary_date2]
+    except (KeyError, TypeError):
+        try:
+            # Alternative structure: Summary -> date -> content
+            news_content2 = random_summary2['content'][summary_date2]
+        except (KeyError, TypeError):
+            news_content2 = "Error retrieving content for this summary"
+    
+    return render(request, 'homepage_1.html', {
+        'summary1': news_content1, 
+        'summary2': news_content2,
+        'summary_date1': summary_date1,
+        'summary_date2': summary_date2,
+        'pages': generated_pages
+    })
+    # return render(request, 'homepage_1.html', {'news_content': 'No news content available', 'pages': generated_pages})
 
 
 

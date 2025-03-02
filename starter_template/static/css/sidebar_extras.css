@@ -1,0 +1,54 @@
+
+/* Additional styles to ensure proper separation between sidebar sections */
+.sidebar {
+  scroll-behavior: smooth;
+}
+
+/* Force scrollbars to be distinctly visible for each section */
+.side-menu.hover-active::-webkit-scrollbar-thumb {
+  background-color: rgba(108, 94, 207, 0.8);
+}
+
+/* Improve the visual separation between sections */
+.side-wrapper {
+  position: relative;
+}
+
+.side-wrapper:after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: linear-gradient(to right, rgba(128, 129, 145, 0.5) 0%, rgba(128, 129, 145, 0.2) 100%);
+  margin-top: 10px;
+}
+
+.side-wrapper.category-section {
+  margin-top: 15px;
+}
+
+/* Add slight animation to improve user experience */
+.side-menu {
+  transition: height 0.3s ease;
+}
+
+/* Ensure the menu and category sections have distinct styling */
+.menu-section .side-title {
+  color: #32a7e2;
+}
+
+.category-section .side-title {
+  color: #ff7551;
+}
+
+/* Make sure menu items are always fully visible */
+.side-menu a {
+  position: relative;
+  width: 100%;
+  transition: background-color 0.2s;
+  border-radius: 6px;
+  padding-left: 4px;
+}
+
+.side-menu a:hover {
+  background-color: rgba(53, 51, 64, 0.5);
+}

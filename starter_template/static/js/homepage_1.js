@@ -52,4 +52,24 @@ $(function () {
      $(".blog-p-name").text(person);
      $(".blog-detail .author-img").attr("src", img);
     });
+    
+    // Fix for scrollable menus - this ensures scrollbars appear when needed
+    function adjustSideMenuHeight() {
+      $('.side-menu').each(function() {
+        const menuItems = $(this).children('a').length;
+        if (menuItems > 4) {
+          $(this).css('overflow-y', 'auto');
+        } else {
+          $(this).css('overflow-y', 'hidden');
+        }
+      });
+    }
+    
+    // Run on page load
+    adjustSideMenuHeight();
+    
+    // Also run on window resize
+    $(window).resize(function() {
+      adjustSideMenuHeight();
+    });
    });
