@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog Detail - Blogboard</title>
     <!-- Include CSS file -->
-    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="{% static 'css/homepage_1.css'%}">
 </head>
 <body data-page="blog-detail">
 <div class="container">
     <!-- Sidebar component will be loaded here -->
-    <div id="sidebar-container"></div>
+    <div id="sidebar-container">
+        {% include 'sidebar.html'%}
+    </div>
     
     <div class="wrapper">
         <!-- Header component will be loaded here -->
-        <div id="header-container"></div>
+       <div id="header-container">
+              {% include 'header_1.html'%}
+       </div>
         
         <div class="main-container">
             <div class="stream-area">
@@ -156,7 +161,7 @@
 </div>
 <!-- Required scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="js/component-loader.js"></script>
-<script src="blog-detail.js"></script>
+<script src="{% static 'js/component-loader.js' %}"></script>
+<script src="{% static 'js/blog-detail.js' %}"></script>
 </body>
 </html>

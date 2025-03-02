@@ -17,41 +17,41 @@ $(function () {
    
    const allBlogs = document.querySelectorAll(".blog");
    
-   allBlogs.forEach((v) => {
-    v.addEventListener("mouseover", () => {
-     const blog = v.querySelector("video");
-     if (blog) blog.play();
-    });
-    v.addEventListener("mouseleave", () => {
-     const blog = v.querySelector("video");
-     if (blog) blog.pause();
-    });
-   });
+//    allBlogs.forEach((v) => {
+//     v.addEventListener("mouseover", () => {
+//      const blog = v.querySelector("video");
+//      if (blog) blog.play();
+//     });
+//     v.addEventListener("mouseleave", () => {
+//      const blog = v.querySelector("video");
+//      if (blog) blog.pause();
+//     });
+//    });
    
    $(function () {
     $(".logo, .logo-expand, .discover").on("click", function (e) {
      $(".main-container").removeClass("show");
      $(".main-container").scrollTop(0);
     });
-    $(".trending, .blog").on("click", function (e) {
+    $(".trending").on("click", function (e) {
      $(".main-container").addClass("show");
      $(".main-container").scrollTop(0);
      $(".sidebar-link").removeClass("is-active");
      $(".trending").addClass("is-active");
     });
    
-    $(".blog").click(function () {
-     var source = $(this).find("source").attr("src");
-     var title = $(this).find(".blog-name").text();
-     var person = $(this).find(".blog-by").text();
-     var img = $(this).find(".author-img").attr("src");
-     $(".blog-stream video").stop();
-     $(".blog-stream source").attr("src", source);
-     $(".blog-stream video").load();
-     $(".blog-p-title").text(title);
-     $(".blog-p-name").text(person);
-     $(".blog-detail .author-img").attr("src", img);
-    });
+    // $(".blog").click(function () {
+    //  var source = $(this).find("source").attr("src");
+    //  var title = $(this).find(".blog-name").text();
+    //  var person = $(this).find(".blog-by").text();
+    //  var img = $(this).find(".author-img").attr("src");
+    //  $(".blog-stream video").stop();
+    //  $(".blog-stream source").attr("src", source);
+    //  $(".blog-stream video").load();
+    //  $(".blog-p-title").text(title);
+    //  $(".blog-p-name").text(person);
+    //  $(".blog-detail .author-img").attr("src", img);
+    // });
     
     // Fix for scrollable menus - this ensures scrollbars appear when needed
     function adjustSideMenuHeight() {
