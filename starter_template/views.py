@@ -88,6 +88,18 @@ def homepage(request):
 
 
 
+def login(request):
+    """
+    Renders the login page.
+    
+    Args:
+        request: The HTTP request object.
+        
+    Returns:
+        The rendered login page.
+    """
+    return render(request, 'login.html')
+
 
 """
     get_page(request):
