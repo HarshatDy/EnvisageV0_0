@@ -23,19 +23,15 @@ except ImportError:
         # Define fallback or dummy functions/variables if needed
         db = {}
 
-from google import genai
-import google.generativeai as google_genai
-# from genai import types
 
-
-class GeminiAPI:
+class DeepseekAPI:
     def __init__(self):
         load_dotenv()
-        self.api_key = os.getenv('GEMINI_API_KEY')
-        self.client = genai.Client(api_key=self.api_key)
+        self.api_key = os.getenv('DEEPSEEK_API_KEY')
+        self.client = OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com")
         
         self.today = datetime.today().strftime('%Y_%m_%d_%H_%M_%S')
-        self.log_file = f"gemini_{self.today}_log.txt"
+        self.log_file = f"deepseek_{self.today}_log.txt"
         try:
             create_log_file(self.log_file)
         except NameError:
@@ -44,14 +40,11 @@ class GeminiAPI:
         self.thread_lock = Lock()
         self.thread_result = {}
         self.summary = {}
-        self.db = db['gemini_api']
+        self.db = db['deepseek_api']
         self.today_date = datetime.today().strftime('%Y-%m-%d')
         self.MAX_RETRY = 5
         self.MAX_BATCHES = 5
         
-        # Initialize model
-        # self.model = genai.GenerativeModel('gemini-pro')
-
     def get_news(self):
         news_sources = {
             "climate_tech_general": [
@@ -119,47 +112,46 @@ class GeminiAPI:
         return news_categories
 
     def generate(self, txt):
-        model_info = google_genai.get_model("models/gemini-2.0-flash-lite")
-        model = google_genai.GenerativeModel("models/gemini-2.0-flash-lite")
-        # append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][generate] Model input token limit: {model_info.input_token_limit=}")
-        # append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][generate] Model output token limit: {model_info.output_token_limit=}")
-        # print(f"input Token{model_info.input_token_limit=}")
-        # print(f"Output Token{model_info.output_token_limit=}")
-        required_input_tokens = model.count_tokens(txt)
-        print(f"Required Token for txt ={required_input_tokens=}")
-        # append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][generate] Required input tokens: {required_input_tokens}")
-        # while response.candidates[0].finish_reason == "MAX_TOKEN" and required_input_tokens > 0:
-        response = self.client.models.generate_content(
-            model="gemini-2.0-flash-lite",
-            contents=[txt])
-        # Get the response text
-        response_text = response.text
-        print(response)
-        print(f"Finish reason: {response.candidates[0].finish_reason}")
-        # Extract usage metadata
-        # try:
-        #     usage_metadata = {
-        #         "candidates": len(response.candidates),
-        #         "prompt_token_count": response.usage_metadata.prompt_token_count,
-        #         "candidates_token_count": response.usage_metadata.candidates_token_count,
-        #         "total_token_count": response.usage_metadata.total_token_count
-        #     }
-        #     append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][generate] Usage metadata: {json.dumps(usage_metadata)}")
-        # except (AttributeError, TypeError) as e:
-        #     append_to_log(self.log_file, f"[GEMINI][WARN][{datetime.today().strftime('%H:%M:%S')}][generate] Failed to log usage metadata: {str(e)}")
-        
-        # Log model token limits to the log file
-        # print(response.text)
-        return response
+        """Generate content using Deepseek API"""
+        try:
+            start_time = time.time()
+            response = self.client.chat.completions.create(
+                model="deepseek-chat",
+                messages=[
+                    {"role": "system", "content": "You are an expert assistant that categorizes news content."},
+                    {"role": "user", "content": txt}
+                ],
+                temperature=0.2,
+                max_tokens=1024
+            )
+            end_time = time.time()
+            processing_time = end_time - start_time
+            
+            # Log processing time
+            append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][generate] Processing time: {processing_time:.2f} seconds")
+            
+            # This is a placeholder for the response - OpenAI API returns different structure than Gemini
+            response_text = response.choices[0].message.content
+            
+            # Create a response object similar to what's expected elsewhere
+            class ResponseWrapper:
+                def __init__(self, text, candidates=None):
+                    self.text = text
+                    self.candidates = candidates or [type('obj', (object,), {'finish_reason': 'stop'})]
+            
+            return ResponseWrapper(response_text)
+            
+        except Exception as e:
+            append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][generate] Error generating content: {str(e)}")
+            raise
     
-    def start_gemini_assistant(self):
+    def start_deepseek_assistant(self):
         """
-        Similar to start_openai_assistant but using Gemini API.
         Gets news from sources, processes them in threads and stores results in MongoDB.
         """
-        gemini_links_db = self.db
+        deepseek_links_db = self.db
         
-        append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Starting Gemini Assistant")
+        append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Starting Deepseek Assistant")
         news_sources = self.get_news()
         links = {}
         lock = self.thread_lock
@@ -171,34 +163,34 @@ class GeminiAPI:
                 links[category] = {}
                 
             for source in sources:
-                append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Getting news from {source}")
+                append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Getting news from {source}")
                 try:
                     links[category][source] = get_links_and_content_from_page(source)
-                    append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Successfully extracted news from {source}")
-                    append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] *****************************************************")
+                    append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Successfully extracted news from {source}")
+                    append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] *****************************************************")
                 except Exception as e:
-                    append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] ************************ERROR************************")
-                    append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Failed to extract news from {source}: {e}")
-                    append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] *****************************************************")
+                    append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] ************************ERROR************************")
+                    append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Failed to extract news from {source}: {e}")
+                    append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] *****************************************************")
                     
-            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Before processing category: {links[category]} and length {len(str(links[category]))} and for category {category}")
-            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Thread ID for {category}: {thread.ident}")
+            append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Before processing category: {links[category]} and length {len(str(links[category]))} and for category {category}")
+            append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Thread ID for {category}: {thread.ident}")
             
-            if not category in result_grded_news:
+            if category not in result_grded_news:
                 result_grded_news[category] = []
                 
             with lock:
-                append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Thread {thread.ident} acquired lock for {category}")
+                append_to_log(self.log_file, f"[DEEPSEEK][DBG][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Thread {thread.ident} acquired lock for {category}")
                 result_grded_news[category] = self.grd_nws(links[category], category)
                 
-            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] After processing category: {result_grded_news[category]} and length {len(result_grded_news[category]) if result_grded_news[category] else 0} and for category {category}")
+            append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] After processing category: {result_grded_news[category]} and length {len(result_grded_news[category]) if result_grded_news[category] else 0} and for category {category}")
             
             with lock:
                 try:
-                    gemini_links_db.insert_one({self.today_date: {category: result_grded_news[category]}})
-                    append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Successfully inserted data for {category} into MongoDB")
+                    deepseek_links_db.insert_one({self.today_date: {category: result_grded_news[category]}})
+                    append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Successfully inserted data for {category} into MongoDB")
                 except Exception as e:
-                    append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Failed to insert data into MongoDB: {e}")
+                    append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Failed to insert data into MongoDB: {e}")
                     print(f"Failed to insert data into MongoDB: {e}")
                     
         threads = []
@@ -206,12 +198,12 @@ class GeminiAPI:
             thread = Thread(target=process_lnks, args=(category, sources))
             threads.append(thread)
             thread.start()
-            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Starting thread for {category} with thread ID: {thread.ident}")
+            append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] Starting thread for {category} with thread ID: {thread.ident}")
             
         for thread in threads:
             thread.join()
             
-        append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] News retrieval complete")
+        append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][start_deepseek_assistant] News retrieval complete")
         return None
 
     def grd_nws(self, links, category):
@@ -223,13 +215,13 @@ class GeminiAPI:
         if news and summary:
             return None
         elif news:
-            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][grd_nws] News is present for category {category}")
+            append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][grd_nws] News is present for category {category}")
             
             for top_url in list(links.keys()):
                 step = max(1, int(len(list(news[top_url].items()))/self.MAX_BATCHES))
                 link_items = [list(news[top_url].items())[j:j+step] for j in range(0, len(list(news[top_url].items())), step)]
                 
-                append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing {len(link_items)} batches for {category}")
+                append_to_log(self.log_file, f"[DEEPSEEK][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing {len(link_items)} batches for {category}")
                 
                 for link_item in link_items:
                     # Log the size of link_item in bytes and KB
@@ -237,23 +229,23 @@ class GeminiAPI:
                         link_item_str = str(link_item)
                         link_item_size_bytes = len(link_item_str)
                         link_item_size_kb = link_item_size_bytes / 1024
-                        append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing batch with size: {link_item_size_bytes} bytes ({link_item_size_kb:.2f} KB)")
+                        append_to_log(self.log_file, f"[DEEPSEEK][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing batch with size: {link_item_size_bytes} bytes ({link_item_size_kb:.2f} KB)")
                     except Exception as e:
-                        append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Failed to calculate batch size: {str(e)}")
+                        append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Failed to calculate batch size: {str(e)}")
                     
                     # Process the batch with retry logic and batch splitting
                     self._process_batch_with_retry(link_item, result_links, categories, top_url, self.MAX_RETRY)
                 
             # Remove empty categories
             result_links = {k: v for k, v in result_links.items() if v}
-            append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Final categorized news: {result_links}")
+            append_to_log(self.log_file, f"[DEEPSEEK][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Final categorized news: {result_links}")
             
         return result_links
 
     def _process_batch_with_retry(self, link_item, result_links, categories, top_url, retries_remaining):
         """Helper method to process a batch with retry logic and batch splitting."""
         if retries_remaining <= 0:
-            append_to_log(self.log_file, f"[GEMINI][CRITICAL][{datetime.today().strftime('%H:%M:%S')}][grd_nws] CRITICAL ERROR: Could not process the data after all retry attempts")
+            append_to_log(self.log_file, f"[DEEPSEEK][CRITICAL][{datetime.today().strftime('%H:%M:%S')}][grd_nws] CRITICAL ERROR: Could not process the data after all retry attempts")
             return
         
         try:
@@ -261,10 +253,10 @@ class GeminiAPI:
             try:
                 link_item_str = str(link_item)
                 link_item_size = len(link_item_str)
-                append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing batch of size {link_item_size} bytes ({link_item_size/1024:.2f} KB)")
+                append_to_log(self.log_file, f"[DEEPSEEK][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Processing batch of size {link_item_size} bytes ({link_item_size/1024:.2f} KB)")
             except Exception as e:
-                append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Failed to log link_item size: {str(e)}")
-                
+                append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Failed to log link_item size: {str(e)}")
+            
             # Create lists of categories and article items for index reference
             categories_list = list(categories.keys())
             
@@ -284,19 +276,17 @@ class GeminiAPI:
             Only include articles that are relevant to at least one category.
             Format the response as a valid Python dictionary of indices.
 
-            Only return the python dict and nothing else in less than 100 words, avoid ``` and word python in the string
+            Only return the python dict and nothing else, avoid markdown formatting.
             """
             
             response = self.generate(prompt)
-            append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Received grading response")
-            
+            append_to_log(self.log_file, f"[DEEPSEEK][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Received grading response")
             # Log the raw response text for debugging
             try:
-                append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Raw response text: {response.text}")
+                append_to_log(self.log_file, f"[DEEPSEEK][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Raw response text: {response.text}")
             except Exception as log_error:
-                append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Failed to log response text: {str(log_error)}")
-                
-            # Parsing response
+                append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Failed to log response text: {str(log_error)}")
+            # Parsing response - DeepSeek might need different handling
             response_text = response.text
             # Remove markdown formatting if present
             if "```python" in response_text:
@@ -306,7 +296,7 @@ class GeminiAPI:
             
             try:
                 index_mapping = eval(response_text)
-                append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Successfully parsed index mapping")
+                append_to_log(self.log_file, f"[DEEPSEEK][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Successfully parsed index mapping")
                 
                 # Convert the index mapping to actual data
                 categorized_data = {}
@@ -330,16 +320,16 @@ class GeminiAPI:
                         for article_url, content in articles:
                             result_links[cat][top_url][article_url] = content
             except Exception as parsing_error:
-                append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Failed to parse response: {str(parsing_error)}")
+                append_to_log(self.log_file, f"[DEEPSEEK][ERR][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Failed to parse response: {str(parsing_error)}")
                 raise parsing_error  # Re-raise to trigger the split and retry
                         
         except Exception as e:
-            append_to_log(self.log_file, f"[GEMINI][WARN][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Error processing batch: {str(e)}. Retries remaining: {retries_remaining-1}")
+            append_to_log(self.log_file, f"[DEEPSEEK][WARN][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Error processing batch: {str(e)}. Retries remaining: {retries_remaining-1}")
             
             # If batch processing failed, split the batch into smaller pieces
             if len(link_item) > 1:
                 mid = len(link_item) // 2
-                append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Splitting batch of size {len(link_item)} into two smaller batches")
+                append_to_log(self.log_file, f"[DEEPSEEK][INF][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Splitting batch of size {len(link_item)} into two smaller batches")
                 
                 # Process first half
                 self._process_batch_with_retry(link_item[:mid], result_links, categories, top_url, retries_remaining-1)
@@ -350,8 +340,7 @@ class GeminiAPI:
                 time.sleep(2)  # Longer pause before retrying a single item
                 self._process_batch_with_retry(link_item, result_links, categories, top_url, retries_remaining-1)
 
-if __name__ == "__main__":
-    client_api = GeminiAPI()
-    client_api.start_gemini_assistant()
-    # client_api.generate("This is a test prompt for Gemini API.")
 
+if __name__ == "__main__":
+    client_api = DeepseekAPI()
+    client_api.start_deepseek_assistant()

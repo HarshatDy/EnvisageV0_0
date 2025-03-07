@@ -41,8 +41,8 @@ def check_all_dates():
 #     start_claude_assistant()
 #     print("Claude Completed : Check DB for updated result!")
 
-def run_worker_thread():
-#if __name__ == "__main__":
+# def run_worker_thread():
+if __name__ == "__main__":
     log_file =f"log_{time.strftime('%Y_%m_%d')}_threading.txt"
     create_log_file(log_file)
     nws_flg, rslt_flg, sum_flg = True, True, True

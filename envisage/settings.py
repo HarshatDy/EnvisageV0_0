@@ -57,8 +57,13 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
+        },
+        'APP': {
+            'client_id': '113183596886-akb4h7oj4bmo92qutcehe6mehnqortr9.apps.googleusercontent.com',
+            'secret': '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',
+            'key': '', 
         }
-    },
+    },  
     # 'facebook': {
     #     'SCOPE': [
     #         'email',
