@@ -4,19 +4,23 @@ import time
 try:
     from .logging_scripts import create_log_file, append_to_log
     from .openai_api import  OpenAiAPI
+    from .gemini_api import GeminiAPI
 except ImportError:
     from logging_scripts import create_log_file, append_to_log
     from openai_api import OpenAiAPI
+    from gemini_api import GeminiAPI
 from datetime import datetime
 
-client = OpenAiAPI()
+# client = OpenAiAPI()
+client = GeminiAPI()
 
 def get_openai_client():
     return client
 
 def run_openai_assistant():
     # openai_api = get_openai_client()
-    client.start_openai_assistant()
+    # client.start_openai_assistant()
+    client.start_gemini_assistant()
     print("OpenAI Completed : Check DB for updated result!")
 
 
@@ -80,27 +84,27 @@ if __name__ == "__main__":
         append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] NEWS CHECK SUCCESSFULL ")
 
     
-    # if not check_results():
-    #     append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] RESULTS CHECK FAILED")
-    #     thread2 = threading.Thread(target=summarize)
-    #     append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] CREATING THREAD FOR RESULTS")
-    #     # print("Creating OpenAI Assistant")
-    #     # thread2 = threading.Thread(target=run_claude_assistant)
-    #     # append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] Creating Claude Assistant")
-    #     # print("Creating Claude Assistant")
-    #     thread2.start()
-    #     append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] STARTING RESULTS THREAD")
-    #     print("Starting OpenAI Assistant")
-    #     # thread2.start()
-    #     # append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] Starting Claude Assistant")
-    #     # print("Starting Claude Assistant")
+    if not check_results():
+        append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] RESULTS CHECK FAILED")
+        thread2 = threading.Thread(target=summarize)
+        append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] CREATING THREAD FOR RESULTS")
+        # print("Creating OpenAI Assistant")
+        # thread2 = threading.Thread(target=run_claude_assistant)
+        # append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] Creating Claude Assistant")
+        # print("Creating Claude Assistant")
+        thread2.start()
+        append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] STARTING RESULTS THREAD")
+        print("Starting OpenAI Assistant")
+        # thread2.start()
+        # append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] Starting Claude Assistant")
+        # print("Starting Claude Assistant")
 
-    #     thread2.join()
-    # # thread2.join()
-    #     program_end = time.time()
-    #     total_execution_time = program_end - program_start
-    # else:
-    #     append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] RESULTS CHECK SUCCESSFULL ")
+        thread2.join()
+    # thread2.join()
+        program_end = time.time()
+        total_execution_time = program_end - program_start
+    else:
+        append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] RESULTS CHECK SUCCESSFULL ")
     
     # if not check_summary():
     #     append_to_log(log_file, f"[WORKER_THREAD][INF][{datetime.today().strftime('%H:%M:%S')}] SUMMARY CHECK FAILED")

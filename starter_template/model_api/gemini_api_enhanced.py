@@ -12,14 +12,12 @@ try:
     from .web_scrapper_api import get_links_and_content_from_page
     from .mongo import db
     from .logging_scripts import *
-    from .hugging_face_api_enhanced import check_url_content_relevance, categorize_content
 except ImportError:
     try:
         # Try absolute imports (for standalone script)
         from web_scrapper_api import get_links_and_content_from_page
         from mongo import db
         from logging_scripts import *
-        from hugging_face_api_enhanced import check_url_content_relevance, categorize_content
     except ImportError:
         print("Warning: Could not import some modules. Some functionality may be limited.")
         # Define fallback or dummy functions/variables if needed
@@ -57,42 +55,42 @@ class GeminiAPI:
     def get_news_src(self):
         """Renamed from get_news to match OpenAI API function name"""
         news_sources = {
-        "0": [
+        "source_0": [
         "https://www.ndtv.com",  # NDTV
         "https://www.timesofindia.indiatimes.com",  # Times of India
         "https://www.thehindu.com",  # The Hindu
         "https://www.indianexpress.com",  # The Indian Express
         "https://www.indiatoday.in",  # India Today
         ],
-        "1": [
+        "source_1": [
         "https://www.mintpressnews.com",  # Mint
         "https://www.dnaindia.com",  # DNA India
         "https://www.hindustantimes.com",  # Hindustan Times
         "https://www.cnbctv18.com",  # CNBC TV18
         "https://www.scoopwhoop.com",  # ScoopWhoop
         ],
-        "2": [
+        "source_2": [
         "https://www.firstpost.com",  # Firstpost
         "https://www.moneycontrol.com",  # Moneycontrol
         "https://www.thequint.com",  # The Quint
         "https://www.deccanherald.com",  # Deccan Herald
         "https://www.news18.com",  # News18
         ],
-        "3": [
+        "source_3": [
         "https://www.thenewsminute.com",  # The News Minute
         "https://www.wionews.com",  # WION News
         "https://www.sify.com",  # Sify News
         "https://www.opindia.com",  # OpIndia
         "https://www.economictimes.indiatimes.com",  # Economic Times
         ],
-        "4": [
+        "source_4": [
         "https://www.tribuneindia.com",  # Tribune India
         "https://www.mid-day.com",  # Mid-Day
         "https://www.aryanews.com",  # Arya News
         "https://www.kashmirreader.com",  # Kashmir Reader
         "https://www.bhaskar.com",  # Dainik Bhaskar
         ]
-    }
+        }
 
 
         return news_sources
@@ -172,35 +170,14 @@ class GeminiAPI:
             append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Before processing category: {links[category]} and length {len(str(links[category]))} and for category {category}")
             append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Thread ID for {category}: {thread.ident}")
             
-            if category not in result_grded_news:
+            if not category in result_grded_news:
                 result_grded_news[category] = []
                 
             with lock:
                 append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Thread {thread.ident} acquired lock for {category}")
+                result_grded_news[category] = self.grd_nws(links[category], category)
                 
-                # Step 1: Check URL relevance using HuggingFace API
-                append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Checking URL content relevance for {category}")
-                relevance_results = check_url_content_relevance(links[category], threshold=0.4)
-                
-                # Filter out irrelevant content
-                filtered_links = {}
-                for base_url, articles in links[category].items():
-                    filtered_links[base_url] = {}
-                    for article_url, content in articles.items():
-                        if base_url in relevance_results and article_url in relevance_results[base_url] and relevance_results[base_url][article_url] == 1:
-                            filtered_links[base_url][article_url] = content
-                            
-                append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Filtered {sum(len(articles) for articles in links[category].values()) - sum(len(articles) for articles in filtered_links.values())} irrelevant articles")
-                
-                # Step 2: Categorize content using HuggingFace API
-                news_categories = self.get_categories()
-                append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Categorizing content for {category}")
-                categorized_content = categorize_content(filtered_links, news_categories)
-                
-                # Convert categorized content to the expected format for result_grded_news
-                result_grded_news[category] = categorized_content
-                
-            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] After processing category: {result_grded_news[category]} and length {len(str(result_grded_news[category])) if result_grded_news[category] else 0} and for category {category}")
+            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] After processing category: {result_grded_news[category]} and length {len(result_grded_news[category]) if result_grded_news[category] else 0} and for category {category}")
             
             with lock:
                 try:
@@ -258,6 +235,135 @@ class GeminiAPI:
             append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][grd_nws] Final categorized news: {result_links}")
             
         return result_links
+
+    def check_article_relevance(self, articles_data):
+        """
+        Check if title and content of each article is relevant to its URL
+        
+        Args:
+            articles_data (dict): Nested dictionary with the structure {top_url: {article_url: [title, content], ...}, ...}
+            
+        Returns:
+            dict: Original dictionary structure with relevance values as strings ('0'/'1')
+        """
+        append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][check_article_relevance] Starting relevance check for articles")
+        
+        # Log the structure of the input data to help diagnose issues
+        append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_article_relevance] Input data structure: {type(articles_data)}")
+        if isinstance(articles_data, dict):
+            for top_url in articles_data:
+                append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][check_article_relevance] Top URL: {top_url}, type: {type(articles_data[top_url])}")
+                break
+        else:
+            append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][check_article_relevance] Input is not a dictionary")
+            return {}
+        
+        # Initialize result dictionary with same structure as input
+        relevance_result = {}
+        total_relevant = 0
+        total_articles = 0
+        
+        for top_url_index, (top_url, url_articles) in enumerate(articles_data.items()):
+            top_url_key = f"top_url_{top_url_index}"
+            relevance_result[top_url_key] = {}
+            
+            # Check if url_articles is a dictionary as expected
+            if not isinstance(url_articles, dict):
+                append_to_log(self.log_file, f"[GEMINI][WARN][{datetime.today().strftime('%H:%M:%S')}][check_article_relevance] URL articles for {top_url} is not a dictionary but {type(url_articles)}")
+                continue
+            
+            # Now iterate through article URLs safely
+            for article_url_index, (article_url, article_data) in enumerate(url_articles.items()):
+                article_url_key = f"article_url_{article_url_index}"
+                total_articles += 1
+                
+                try:
+                    # Extract title and content based on data format
+                    if isinstance(article_data, list) and len(article_data) >= 2:
+                        title = article_data[0]
+                        content = article_data[1]
+                    elif isinstance(article_data, dict) and 'title' in article_data and 'content' in article_data:
+                        title = article_data['title']
+                        content = article_data['content']
+                    else:
+                        # If format is unknown, log and mark as irrelevant
+                        append_to_log(self.log_file, f"[GEMINI][WARN][{datetime.today().strftime('%H:%M:%S')}][check_article_relevance] Unknown data format for article: {type(article_data)}")
+                        relevance_result[top_url_key][article_url_key] = "0"
+                        continue
+                    
+                    # Check relevance using URL keywords and content/title comparison
+                    url_relevant = self._is_content_relevant_to_url(article_url, title, content)
+                    
+                    # Store result as string ('1' for relevant, '0' for irrelevant)
+                    relevance_result[top_url_key][article_url_key] = "1" if url_relevant else "0"
+                    
+                    if url_relevant:
+                        total_relevant += 1
+                except Exception as e:
+                    # Catch any exceptions during processing and log them
+                    append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][check_article_relevance] Error processing article {article_url}: {str(e)}")
+                    # Store result as string
+                    relevance_result[top_url_key][article_url_key] = "0"
+        
+        # Log the results
+        append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][check_article_relevance] Found {total_relevant} relevant articles out of {total_articles}")
+        
+        return relevance_result
+    
+    def _is_content_relevant_to_url(self, url, title, content):
+        """
+        Determine if the title and content are relevant to the URL
+        
+        Args:
+            url (str): The article URL
+            title (str): The article title
+            content (str): The article content
+            
+        Returns:
+            bool: True if relevant, False if irrelevant
+        """
+        try:
+            # Extract keywords from URL
+            # Remove protocol, www, and split by common separators
+            clean_url = url.lower().replace('http://', '').replace('https://', '').replace('www.', '')
+            url_parts = clean_url.split('/')
+            
+            # Extract the domain and article path parts
+            if len(url_parts) > 0:
+                domain = url_parts[0]
+                path_parts = url_parts[1:] if len(url_parts) > 1 else []
+            else:
+                return False
+            
+            # Extract potential keywords from the URL path
+            url_keywords = []
+            for part in path_parts:
+                # Skip common URL parts like 'index', 'article', etc.
+                if part in ['', 'index', 'article', 'articles', 'news', 'story', 'view']:
+                    continue
+                
+                # Process parts that might contain multiple words
+                words = part.replace('.html', '').replace('.htm', '').replace('-', ' ').replace('_', ' ').split()
+                url_keywords.extend([word for word in words if len(word) > 3])
+            
+            # If there are no meaningful keywords in the URL, consider the relevance based on content quality
+            if not url_keywords:
+                # If both title and content are present and not too short, consider it relevant
+                return len(title) > 10 and len(content) > 100
+            
+            # Check if URL keywords appear in title or first part of content
+            combined_text = (title + " " + content[:500]).lower()
+            
+            # Count how many URL keywords appear in the text
+            matches = sum(1 for keyword in url_keywords if keyword.lower() in combined_text)
+            
+            # If at least 40% of the keywords match, consider it relevant
+            return matches >= max(1, len(url_keywords) * 0.4)
+            
+        except Exception as e:
+            append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][_is_content_relevant_to_url] Error checking relevance: {str(e)}")
+            # Default to relevant in case of error
+            return True
 
     def _process_batch_with_retry(self, link_item, result_links, categories, top_url, retries_remaining):
         """Helper method to process a batch with retry logic and batch splitting."""
@@ -491,84 +597,17 @@ class GeminiAPI:
     def fetch_content_and_run_summary(self):
         """
         Fetch content and run summary generation if not already done.
-        Uses HuggingFace summarize_articles for initial summarization before Gemini processing.
         """
         result_json = self.fetch_todays_results()
         if not result_json:
-            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] No results found for today, starting summarization process")
-            
-            # Get content from database first
-            content = self.check_news_in_db()
-            if not content:
-                append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] No content found in database")
-                return None
-                
-            # Step 1: Use HuggingFace summarization for each article
-            append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Starting local summarization with HuggingFace")
-            try:
-                from hugging_face_api_enhanced import summarize_articles, generate_overall_summary
-                
-                # Process each category with the summarize_articles function
-                summarized_content = {}
-                for category, sources in content.items():
-                    append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Summarizing content for category: {category}")
-                    category_summaries = summarize_articles(sources, min_words=75)
-                    
-                    if category not in summarized_content:
-                        summarized_content[category] = {}
-                    
-                    # Convert summaries to the expected format (keeping consistent with the thread_result format)
-                    for source, article_summaries in category_summaries.items():
-                        if source not in summarized_content[category]:
-                            summarized_content[category][source] = []
-                            
-                        for article_url, summary in article_summaries.items():
-                            # Get original content
-                            original_content = sources.get(source, {}).get(article_url, ["", ""])
-                            title = original_content[0] if isinstance(original_content, list) and len(original_content) > 0 else ""
-                            content = original_content[1] if isinstance(original_content, list) and len(original_content) > 1 else ""
-                            
-                            summarized_content[category][source].append({
-                                "link": article_url,
-                                "title": title,
-                                "content": content,
-                                "summary": summary
-                            })
-                
-                # Save summarized content to thread_result for database storage
-                self.thread_result = summarized_content
-                
-                # Push results to database if we have summarized content
-                if self.thread_result:
-                    self.push_results_to_db(self.thread_result, "Result")
-                    append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Successfully pushed summarized results to MongoDB")
-                else:
-                    append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] No thread_result found, nothing to push to MongoDB")
-                
-                # Generate an overall summary using HuggingFace
-                try:
-                    overall_summary = generate_overall_summary(content)
-                    self.summary = {"huggingface_summary": overall_summary}
-                    formatted_result = {self.today_date: overall_summary}
-                    self.push_results_to_db(formatted_result, "Summary")
-                    append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Successfully generated and stored overall summary")
-                except Exception as e:
-                    append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Error generating overall summary: {str(e)}")
-                
-            except ImportError as e:
-                append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Error importing HuggingFace modules: {str(e)}")
-                # Fall back to original threading approach
-                self.run_sumarizing_threads()
-                if self.thread_result:
-                    self.push_results_to_db(self.thread_result, "Result")
-            except Exception as e:
-                append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Error during HuggingFace summarization: {str(e)}")
-                # Fall back to original threading approach
-                self.run_sumarizing_threads()
-                if self.thread_result:
-                    self.push_results_to_db(self.thread_result, "Result")
-        else:
-            # If results already exist, use Gemini for enhanced summary
+            append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] No results found for today")
+            self.run_sumarizing_threads() #Summarizing each news individually
+            if self.thread_result:
+                self.push_results_to_db(self.thread_result, "Result")
+                append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Successfully pushed summarized results to MongoDB")
+            else:
+                append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] No thread_result found, nothing to push to MongoDB")
+        else: #Summarizing the whole thing
             append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Result JSON length: {len(result_json)}")
             append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][fetch_content_and_run_summary] Result : {result_json}")
             result_length = len(result_json)
