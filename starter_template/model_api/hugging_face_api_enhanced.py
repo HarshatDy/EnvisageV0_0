@@ -103,6 +103,7 @@ def check_url_content_relevance(dataset: Dict[str, Dict[str, Union[List[str], st
         
     Returns:
         Dictionary with structure {base_url_0: {article_url_0: 1, article_url_1: 0, ...}}
+        Only includes base_urls with at least one relevant article.
     """
     log_message("Starting relevance check for dataset")
     
@@ -165,8 +166,18 @@ def check_url_content_relevance(dataset: Dict[str, Dict[str, Union[List[str], st
             if processed % 10 == 0:
                 log_message(f"Progress: {processed}/{total_articles} articles processed")
     
-    log_message(f"Relevance check completed. Processed {processed} articles.")
-    return results
+    # Filter out base_urls with no relevant articles
+    filtered_results = {}
+    for base_url, articles in results.items():
+        # Check if at least one article is relevant (has value 1)
+        if any(is_relevant == 1 for is_relevant in articles.values()):
+            filtered_results[base_url] = articles
+            log_message(f"Base URL {base_url} has at least one relevant article - keeping in results")
+        else:
+            log_message(f"Base URL {base_url} has no relevant articles - removing from results")
+    
+    log_message(f"Relevance check completed. Filtered from {len(results)} to {len(filtered_results)} base URLs with relevant articles.")
+    return filtered_results
 
 def categorize_content(dataset: Dict[str, Dict[str, Union[List[str], str]]], 
                      categories: Dict[str, List[str]]) -> Dict[str, Dict[str, Dict[str, Union[List[str], str]]]]:
@@ -333,7 +344,7 @@ def summarize_articles(dataset: Dict[str, Dict[str, Union[List[str], str]]],
                     content = str(content_data) if content_data else ""
                 
                 if not content.strip():
-                    summaries[base_url][article_url] = "Error: No content to summarize"
+                    log_message(f"Article has no content to summarize: {article_url}")
                     continue
                 
                 # Split content into sentences
@@ -379,6 +390,11 @@ def summarize_articles(dataset: Dict[str, Dict[str, Union[List[str], str]]],
                         if word_count >= min_words:
                             break
                     
+                    # If we couldn't reach minimum word count, check if we have at least some content
+                    if word_count < min_words and word_count < 30:
+                        log_message(f"Could not generate adequate summary for article: {article_url}. Word count: {word_count}")
+                        continue
+                    
                     # Sort selected sentences by original position to maintain flow
                     selected_sentences.sort(key=lambda x: x[0])
                     
@@ -389,20 +405,31 @@ def summarize_articles(dataset: Dict[str, Dict[str, Union[List[str], str]]],
                 if title:
                     summary = f"{title}\n\n{summary}"
                 
+                # Check if summary has enough content
+                if len(summary.split()) < 30:
+                    log_message(f"Generated summary too short for {article_url}, skipping")
+                    continue
+                    
                 # Store summary
                 summaries[base_url][article_url] = summary
                 log_message(f"Generated summary of {len(summary.split())} words for {article_url}")
             
             except Exception as e:
                 log_message(f"Error summarizing article {article_url}: {str(e)}")
-                summaries[base_url][article_url] = f"Error summarizing: {str(e)}"
+                continue  # Skip this article instead of storing an error message
             
             processed += 1
             if processed % 10 == 0:
                 log_message(f"Progress: {processed}/{total_articles} articles summarized")
     
-    log_message(f"Summarization completed. Processed {processed} articles.")
-    return summaries
+    # Filter out any empty base_urls
+    filtered_summaries = {}
+    for base_url, articles in summaries.items():
+        if articles:  # Only include base_urls with at least one article
+            filtered_summaries[base_url] = articles
+    
+    log_message(f"Summarization completed. Processed {processed} articles with {len(filtered_summaries)} valid sources.")
+    return filtered_summaries
 
 def summary_for_results(categorized_data: Dict[str, Dict[str, Dict[str, Union[List[str], str]]]]) -> str:
     """

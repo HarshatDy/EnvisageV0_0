@@ -22,6 +22,7 @@ def run_openai_assistant():
     # client.start_openai_assistant()
     client.start_gemini_assistant()
     print("OpenAI Completed : Check DB for updated result!")
+    # return None
 
 
 def summarize():
