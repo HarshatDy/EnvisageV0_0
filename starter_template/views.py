@@ -25,6 +25,7 @@ Functions:
     show_generated_page(request, page_name):
         Renders a generated HTML page based on the provided page name.
 """
+
 def homepage(request):
     # chk_news_content()
     openai_mongo = db['openai_api']

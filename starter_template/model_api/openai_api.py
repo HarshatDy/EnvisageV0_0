@@ -28,6 +28,10 @@ class OpenAiAPI:
             project=os.getenv('PROJ'),
             api_key=os.getenv('OPENAI_API_KEY')
         )
+        # self.client=OpenAI(
+        #     api_key=os.getenv('DEEPSEEK_API_KEY'),
+        #     base_url=os.getenv('DEEPSEEK_BASE_URL')
+        # )
         self.today = datetime.today().strftime('%Y_%m_%d_%H_%M_%S')
         self.log_file = f"openai_{self.today}_log.txt"
         create_log_file(self.log_file)

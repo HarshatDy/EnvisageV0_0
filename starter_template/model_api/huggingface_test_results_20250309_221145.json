@@ -1,0 +1,76 @@
+{
+  "Technology": {
+    "https://news-source.com": {
+      "https://news-source.com/article2": [
+        "New AI Model Breaks Performance Records",
+        "A tech company has released a new artificial intelligence model that significantly outperforms previous versions. The model shows improved capabilities in natural language understanding and generation, making it valuable for businesses looking to automate customer service interactions."
+      ],
+      "https://news-source.com/article3": [
+        "Stock Market Reaches All-Time High",
+        "The stock market closed at a record high yesterday, with technology and energy sectors leading the gains. Investors are optimistic about economic growth despite ongoing inflation concerns. Financial analysts recommend diversified portfolios to capitalize on the current market trends."
+      ]
+    },
+    "https://tech-blog.com": {
+      "https://tech-blog.com/article1": [
+        "Cryptocurrency Regulation Debates Heat Up",
+        "Lawmakers are intensifying discussions about cryptocurrency regulations as digital currencies gain mainstream adoption. The debate centers on balancing innovation with consumer protection and financial stability. Industry leaders are actively participating in policy discussions to shape future regulatory frameworks."
+      ],
+      "https://tech-blog.com/article2": [
+        "Renewable Energy Investments Surge",
+        "Investment in renewable energy projects has increased by 30% this year. Solar and wind energy installations are becoming more cost-effective, attracting both private and public funding. The trend reflects growing commitment to reducing carbon emissions and addressing climate change through sustainable energy solutions."
+      ]
+    }
+  },
+  "Environment": {
+    "https://news-source.com": {
+      "https://news-source.com/article1": [
+        "Climate Change Impact on Coastal Cities",
+        "Rising sea levels are threatening coastal communities around the world. Scientists predict that by 2050, several major cities could face regular flooding and increased erosion. Governments are now planning sea walls and other protective measures to mitigate these effects."
+      ],
+      "https://news-source.com/article2": [
+        "New AI Model Breaks Performance Records",
+        "A tech company has released a new artificial intelligence model that significantly outperforms previous versions. The model shows improved capabilities in natural language understanding and generation, making it valuable for businesses looking to automate customer service interactions."
+      ],
+      "https://news-source.com/article3": [
+        "Stock Market Reaches All-Time High",
+        "The stock market closed at a record high yesterday, with technology and energy sectors leading the gains. Investors are optimistic about economic growth despite ongoing inflation concerns. Financial analysts recommend diversified portfolios to capitalize on the current market trends."
+      ]
+    },
+    "https://tech-blog.com": {
+      "https://tech-blog.com/article2": [
+        "Renewable Energy Investments Surge",
+        "Investment in renewable energy projects has increased by 30% this year. Solar and wind energy installations are becoming more cost-effective, attracting both private and public funding. The trend reflects growing commitment to reducing carbon emissions and addressing climate change through sustainable energy solutions."
+      ]
+    }
+  },
+  "Business": {
+    "https://news-source.com": {
+      "https://news-source.com/article2": [
+        "New AI Model Breaks Performance Records",
+        "A tech company has released a new artificial intelligence model that significantly outperforms previous versions. The model shows improved capabilities in natural language understanding and generation, making it valuable for businesses looking to automate customer service interactions."
+      ],
+      "https://news-source.com/article3": [
+        "Stock Market Reaches All-Time High",
+        "The stock market closed at a record high yesterday, with technology and energy sectors leading the gains. Investors are optimistic about economic growth despite ongoing inflation concerns. Financial analysts recommend diversified portfolios to capitalize on the current market trends."
+      ]
+    },
+    "https://tech-blog.com": {
+      "https://tech-blog.com/article1": [
+        "Cryptocurrency Regulation Debates Heat Up",
+        "Lawmakers are intensifying discussions about cryptocurrency regulations as digital currencies gain mainstream adoption. The debate centers on balancing innovation with consumer protection and financial stability. Industry leaders are actively participating in policy discussions to shape future regulatory frameworks."
+      ],
+      "https://tech-blog.com/article2": [
+        "Renewable Energy Investments Surge",
+        "Investment in renewable energy projects has increased by 30% this year. Solar and wind energy installations are becoming more cost-effective, attracting both private and public funding. The trend reflects growing commitment to reducing carbon emissions and addressing climate change through sustainable energy solutions."
+      ]
+    }
+  },
+  "Health": {
+    "https://news-source.com": {
+      "https://news-source.com/article2": [
+        "New AI Model Breaks Performance Records",
+        "A tech company has released a new artificial intelligence model that significantly outperforms previous versions. The model shows improved capabilities in natural language understanding and generation, making it valuable for businesses looking to automate customer service interactions."
+      ]
+    }
+  }
+}
