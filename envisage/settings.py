@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -59,8 +61,8 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         },
         'APP': {
-            'client_id': '113183596886-akb4h7oj4bmo92qutcehe6mehnqortr9.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': os.getenv('SOCIALACCOUNT_PROVIDERS_CLIENT_ID'),
+            'secret': os.getenv('SOCIALACCOUNT_PROVIDERS_SECRET'),
             'key': '', 
         }
     },  
