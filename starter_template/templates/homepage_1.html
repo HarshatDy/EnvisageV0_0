@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Dashboard</title>
+    <!-- Include CSS files -->
+    <link rel="stylesheet" href="{% static 'css/homepage_1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar_extras.css' %}">
+</head>
+<body data-page="homepage">
+<div class="container">
+    <!-- Sidebar component will be loaded here -->
+    <div id="sidebar-container">
+        {% include 'sidebar.html' %}
+    </div>
+    
+    <div class="wrapper">
+        <!-- Header component will be loaded here -->
+        <div id="header-container">
+        {% include 'header_1.html' %}
+
+        </div>
+        
+        <div class="main-container">
+            <div class="main-header anim" style="--delay: 0s">Discover</div>
+            <div class="main-blogs">
+                <div class="main-blog anim" style="--delay: .1s">
+                    <a href="blog-detail.html" class="blog-link" data-title="How to do Basic Jumping and how to landing safely" data-author="Thomas Hope" data-img="https://images.unsplash.com/photo-1560941001-d4b52ad00ecc?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80" data-blog-img="https://images.unsplash.com/photo-1476801071117-fbc157ae3f01?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDh8fHxlbnwwfHx8&w=1000&q=80">
+                        <div class="main-blog__title">How to do Basic Jumping and how to landing safely</div>
+                        <div class="main-blog__author">
+                            <div class="author-img__wrapper">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                                <img class="author-img" src="https://images.unsplash.com/photo-1560941001-d4b52ad00ecc?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80" />
+                            </div>
+                            <div class="author-detail">
+                                <div class="author-name">Thomas Hope</div>
+                                <div class="author-info">53K views <span class="seperate"></span>2 weeks ago</div>
+                            </div>
+                        </div>
+                        <div class="main-blog__time">7 min</div>
+                    </a>
+                </div>
+                <div class="main-blog anim" style="--delay: .2s">
+                    <a href="blog-detail.html" class="blog-link" data-title="Skateboard Tips You need to know" data-author="Tony Andrew" data-img="https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mzl8fG1lbnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" data-blog-img="https://images.unsplash.com/photo-1520045892732-304bc3ac5d8e?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80">
+                        <div class="main-blog__title">Skateboard Tips You need to know</div>
+                        <div class="main-blog__author tips">
+                            <div class="main-blog__time">7 min</div>
+                            <div class="author-img__wrapper">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                                <img class="author-img" src="https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mzl8fG1lbnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" />
+                            </div>
+                            <div class="author-detail">
+                                <div class="author-name">Tony Andrew</div>
+                                <div class="author-info">53K views <span></span>2 weeks ago</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="small-header anim" style="--delay: .3s">Most Read</div>
+            <div class="blogs">
+                <div class="blog anim" style="--delay: .4s">
+                    <a href="blog-detail.html" class="blog-link" data-title="Basic how to ride your skateboard comfortly" data-author="Andy William" data-img="https://images.pexels.com/photos/1680172/pexels-photo-1680172.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" data-blog-img="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1548&q=80">
+                        <div class="blog-time">8 min</div>
+                        <div class="blog-wrapper">
+                            <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1548&q=80" alt="Blog Image">
+                            <div class="author-img__wrapper blog-author">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                                <img class="author-img" src="https://images.pexels.com/photos/1680172/pexels-photo-1680172.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" />
+                            </div>
+                        </div>
+                        <div class="blog-by">Andy William</div>
+                        <div class="blog-name">Basic how to ride your skateboard comfortly</div>
+                        <div class="blog-view">54K views<span class="seperate blog-seperate"></span>1 week ago</div>
+                    </a>
+                </div>
+                <div class="blog anim" style="--delay: .5s">
+                    <a href="blog-detail.html" class="blog-link" data-title="Prepare for your first skateboard jump" data-author="Gerard Bind" data-img="https://images.pexels.com/photos/3370021/pexels-photo-3370021.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" data-blog-img="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80">
+                        <div class="blog-time">5 min</div>
+                        <div class="blog-wrapper">
+                            <img src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80" alt="Blog Image">
+                            <div class="author-img__wrapper blog-author">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                                <img class="author-img" src="https://images.pexels.com/photos/3370021/pexels-photo-3370021.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" />
+                            </div>
+                        </div>
+                        <div class="blog-by offline">Gerard Bind</div>
+                        <div class="blog-name">Prepare for your first skateboard jump</div>
+                        <div class="blog-view">42K views<span class="seperate blog-seperate"></span>1 week ago</div>
+                    </a>
+                </div>
+                <div class="blog anim" style="--delay: .6s">
+                    <a href="blog-detail.html" class="blog-link" data-title="Basic equipment to play skateboard safely" data-author="John Wise" data-img="https://images.pexels.com/photos/1870163/pexels-photo-1870163.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" data-blog-img="https://images.unsplash.com/photo-1476817343404-01bb5eba8f6c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80">
+                        <div class="blog-time">7 min</div>
+                        <div class="blog-wrapper">
+                            <img src="https://images.unsplash.com/photo-1476817343404-01bb5eba8f6c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1650&q=80" alt="Blog Image">
+                            <div class="author-img__wrapper blog-author">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                                <img class="author-img" src="https://images.pexels.com/photos/1870163/pexels-photo-1870163.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" />
+                            </div>
+                        </div>
+                        <div class="blog-by offline">John Wise</div>
+                        <div class="blog-name">Basic equipment to play skateboard safely</div>
+                        <div class="blog-view">64K views<span class="seperate blog-seperate"></span>2 week ago</div>
+                    </a>
+                </div>
+                <div class="blog anim" style="--delay: .7s">
+                    <a href="blog-detail.html" class="blog-link" data-title="Tips to playing skateboard on the ramp" data-author="Budi Hakim" data-img="https://images.pexels.com/photos/2889942/pexels-photo-2889942.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" data-blog-img="https://images.unsplash.com/photo-1472437774355-71ab6752b434?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1648&q=80">
+                        <div class="blog-time">6 min</div>
+                        <div class="blog-wrapper">
+                            <img src="https://images.unsplash.com/photo-1472437774355-71ab6752b434?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1648&q=80" alt="Blog Image">
+                            <div class="author-img__wrapper blog-author">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                                <img class="author-img" src="https://images.pexels.com/photos/2889942/pexels-photo-2889942.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" />
+                            </div>
+                        </div>
+                        <div class="blog-by">Budi Hakim</div>
+                        <div class="blog-name">Tips to playing skateboard on the ramp</div>
+                        <div class="blog-view">50K views<span class="seperate blog-seperate"></span>1 week ago</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+   <script src={% static "js/component-loader.js" %}></script>
+   <script src={% static "js/homepage_1.js" %}></script>
+</body>
+</html>
