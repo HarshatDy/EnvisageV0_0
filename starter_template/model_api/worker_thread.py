@@ -4,11 +4,11 @@ import time
 try:
     from .logging_scripts import create_log_file, append_to_log
     from .openai_api import  OpenAiAPI
-    from .gemini_api_test_time_based_scrapper import GeminiAPI
+    from .gemini_api_test_time_based_scrapper_gemini import GeminiAPI
 except ImportError:
     from logging_scripts import create_log_file, append_to_log
     from openai_api import OpenAiAPI
-    from gemini_api_test_time_based_scrapper import GeminiAPI
+    from gemini_api_test_time_based_scrapper_gemini import GeminiAPI
 from datetime import datetime
 
 # client = OpenAiAPI()

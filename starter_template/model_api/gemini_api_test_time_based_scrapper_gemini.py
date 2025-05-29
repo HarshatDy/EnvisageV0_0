@@ -479,6 +479,137 @@ class GeminiAPI:
                 
         return ResponseWrapper(response)
     
+    def categorize_content_with_gemini(self, filtered_links, news_categories):
+        """
+        Categorizes content from filtered news links using Gemini API.
+        
+        Args:
+            filtered_links (dict): Dictionary mapping base URLs to article URLs and their content
+                Example: {'https://source.com/': {'https://source.com/article1': ['Title', 'Content']}}
+            news_categories (dict): Dictionary of category names to empty lists
+                Example: {'Politics': [], 'Technology': []}
+        
+        Returns:
+            dict: Dictionary of categorized content in the format:
+                {
+                    "category_name": {
+                        "base_url": {
+                            "article_url": ["Title", "Content"],
+                            ...
+                        },
+                        ...
+                    },
+                    ...
+                }
+        """
+        categorized_content = {}
+        categories_list = list(news_categories.keys())
+        
+        append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][categorize_content_with_gemini] Categorizing content using Gemini API")
+        
+        # Process each base URL separately
+        for base_url, articles in filtered_links.items():
+            append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][categorize_content_with_gemini] Processing {len(articles)} articles from {base_url}")
+            
+            # If we have many articles from a single source, process in batches
+            MAX_BATCH_SIZE = 10  # Maximum articles per batch
+            article_items = list(articles.items())
+            
+            for i in range(0, len(article_items), MAX_BATCH_SIZE):
+                batch = article_items[i:i+MAX_BATCH_SIZE]
+                append_to_log(self.log_file, f"[GEMINI][DBG][{datetime.today().strftime('%H:%M:%S')}][categorize_content_with_gemini] Processing batch {i//MAX_BATCH_SIZE + 1} with {len(batch)} articles")
+                
+                # Format the batch for the prompt
+                formatted_batch = []
+                for article_url, content in batch:
+                    title = content[0] if isinstance(content, list) and len(content) >= 1 else "Unknown Title"
+                    article_text = content[1] if isinstance(content, list) and len(content) >= 2 else str(content)
+                    # Truncate content to avoid exceeding token limits
+                    truncated_text = article_text[:1000] if len(article_text) > 1000 else article_text
+                    formatted_batch.append({
+                        "url": article_url,
+                        "title": title,
+                        "content_preview": truncated_text
+                    })
+                
+                prompt = f"""
+                Analyze these news articles and categorize each into ONE of the following categories:
+                {', '.join(categories_list)}
+                
+                For each article, determine ALL relevant categories (an article can belong to multiple categories).
+                
+                Articles to categorize:
+                {json.dumps(formatted_batch, indent=2)}
+                
+                Return ONLY a JSON object with this structure:
+                {{
+                    "categorized_articles": [
+                        {{
+                            "article_url": "[article URL]",
+                            "categories": ["Category1", "Category2", ...]
+                        }},
+                        ...
+                    ]
+                }}
+                
+                Ensure category names EXACTLY match the provided list. Only include categories from the list above.
+                """
+                
+                try:
+                    response = self.openai_api_request(prompt)
+                    response_text = response.text
+                    
+                    # Clean up the response if it contains markdown formatting
+                    if "```json" in response_text:
+                        response_text = response_text.split("```json")[1].split("```")[0].strip()
+                    elif "```" in response_text:
+                        response_text = response_text.split("```")[1].split("```")[0].strip()
+                        
+                    # Parse the JSON response
+                    categorization_result = json.loads(response_text)
+                    
+                    # Process each categorized article
+                    for article_data in categorization_result.get("categorized_articles", []):
+                        article_url = article_data.get("article_url", "")
+                        article_categories = article_data.get("categories", [])
+                        
+                        # Skip if article_url is not found or no categories assigned
+                        if not article_url or not article_categories:
+                            continue
+                            
+                        # Find the article in our batch
+                        article_content = None
+                        for url, content in batch:
+                            if url == article_url:
+                                article_content = content
+                                break
+                                
+                        if article_content:
+                            # Add the article to each of its categories
+                            for category in article_categories:
+                                if category in categories_list:
+                                    # Initialize category if needed
+                                    if category not in categorized_content:
+                                        categorized_content[category] = {}
+                                    
+                                    # Initialize base_url in category if needed
+                                    if base_url not in categorized_content[category]:
+                                        categorized_content[category][base_url] = {}
+                                    
+                                    # Add article to the category
+                                    categorized_content[category][base_url][article_url] = article_content
+                    
+                except Exception as e:
+                    append_to_log(self.log_file, f"[GEMINI][ERR][{datetime.today().strftime('%H:%M:%S')}][categorize_content_with_gemini] Error processing batch: {str(e)}")
+                    continue
+        
+        # Log categorization summary
+        category_counts = {category: sum(len(urls) for urls in sources.values()) 
+                         for category, sources in categorized_content.items()}
+        append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][categorize_content_with_gemini] Categorization complete. Articles per category: {category_counts}")
+        
+        return categorized_content
+
     def start_gemini_assistant(self): #for news retrival 
         """
         Starts the Gemini assistant process to scrape news from sources, process them in threads,
@@ -543,10 +674,10 @@ class GeminiAPI:
                             
                 append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Filtered {sum(len(articles) for articles in links[category].values()) - sum(len(articles) for articles in filtered_links.values())} irrelevant articles")
                 
-                # Step 2: Categorize content using HuggingFace API
+                # Step 2: Use Gemini API to categorize content instead of HuggingFace API
                 news_categories = self.get_categories()
                 append_to_log(self.log_file, f"[GEMINI][INF][{datetime.today().strftime('%H:%M:%S')}][start_gemini_assistant] Categorizing content for {category}")
-                categorized_content = categorize_content(filtered_links, news_categories)
+                categorized_content = self.categorize_content_with_gemini(filtered_links, news_categories)
                 
                 # Clean the categorized content to remove empty categories
                 categorized_content = self._clean_categorized_content(categorized_content)
@@ -1447,8 +1578,8 @@ class GeminiAPI:
         if count > 0:
             print(f"Summary is present")
             cursor = self.db.find({f'Summary.{self.today_date}': {'$exists': True}})
-            for doc in cursor:
-                print(f"Found summary document: {doc}")
+            # for doc in cursor:
+            #     print(f"Found summary document: {doc}")
             return True
         return False
 

@@ -1,0 +1,134 @@
+# Web Scraping Approaches Documentation
+
+This document outlines the various approaches used in the thumbnail scraper for web scraping image search sites while avoiding detection and blocking.
+
+## User Agent Management
+
+### Techniques
+- Random user agent rotation using fake_useragent library
+- Variety of browser types (Chrome, Firefox, Safari, Edge)
+- Variety of operating systems (Windows, Mac, iOS, Linux)
+- Using mobile and desktop user agents
+
+### Implementation
+- Using fake_useragent library to generate realistic user agents
+- Maintaining a fallback list of modern user agents
+- Selecting different user agents for each request attempt
+
+## Header Optimization
+
+### Techniques
+- Browser-specific header patterns
+- Including all standard browser headers
+- Viewport and device memory specification
+- Referrer masking
+
+### Implementation
+- Preparing multiple browser-specific header templates
+- Random but consistent header generation
+- Setting appropriate Accept headers
+- Including sec-ch-ua headers for browser identification
+- Adding realistic viewports (common screen resolutions)
+
+## Proxy Rotation
+
+### Techniques
+- Sequential proxy rotation
+- IP address cycling
+- Proxy type variety
+
+### Implementation
+- Maintaining a pool of proxy servers
+- Cycling through proxies in sequence
+- Using different proxies for different request attempts
+- Intelligent proxy selection based on failure patterns
+
+## Request Approaches
+
+### Approach #1: Standard Browser-Like Request
+- Sets full browser headers
+- Visits homepage before target page
+- Establishes cookies
+- Handles redirects
+
+### Approach #2: Proxy with Simplified URL
+- Uses alternate proxy server
+- Removes query parameters from URLs
+- Shorter timeouts
+- Different header set
+
+### Approach #3: Low-Level HTTP Connection
+- Uses http.client directly
+- Bypasses some request libraries that get detected
+- Custom header handling
+- Lower-level socket control
+
+### Approach #4: Googlebot Impersonation
+- Mimics a Google crawling bot
+- Uses simplified headers
+- Extends timeouts for crawl-like behavior
+
+## Anti-Detection Techniques
+
+### Rate Limiting Avoidance
+- Random delays between requests
+- Exponential backoff on failure
+- Jitter in timing to appear human-like
+
+### Bot Detection Avoidance
+- Detecting CAPTCHA and security challenges in responses
+- Adapting approach when bot detection triggers
+- Establishing browsing history and cookies
+- Pretending to be a real browser session
+
+### Realistic Browser Behavior
+- Visiting homepage first to establish cookies
+- Random delays between page loads
+- Rotating referrers that make sense for image searches
+- Setting appropriate viewport and device parameters
+
+## Image Source Diversity
+
+### Multiple Sources
+- Unsplash as primary source
+- Pexels as fallback source
+- Support for additional sources
+
+### Source-Specific Formatting
+- Using hyphens for Unsplash URLs
+- Using plus signs for Pexels URLs
+- Custom parsing for each source's HTML structure
+
+## Parsing Techniques
+
+### BeautifulSoup Selectors
+- Multiple selector patterns for resilience
+- Fallback selectors when primary ones fail
+- Source-specific selector strategies
+
+### Image Extraction
+- Handling srcset attributes for high-resolution images
+- Detecting and extracting largest available images
+- Filtering for valid images only
+
+## Error Handling
+
+### Request Failures
+- Multiple retry approaches
+- Switching strategies on failure
+- Detailed logging for debugging
+- Exponential backoff with jitter
+
+### Parsing Failures
+- Alternate selectors when primary parsing fails
+- Graceful degradation when elements aren't found
+- Returning partial results rather than failing completely
+
+## Usage Recommendations
+
+1. Update proxy list with working proxies
+2. Install fake_useragent library for best results
+3. Use VPN if persistent blocking occurs
+4. Run with debug flag to diagnose issues
+5. Respect website terms of service and robots.txt
+6. Implement delays between requests to be respectful
