@@ -1,0 +1,248 @@
+2025-05-27 08:20:01,220 - Envisage_Scheduler - INFO - Envisage Scheduler starting up
+2025-05-27 08:20:01,220 - Envisage_Scheduler - INFO - Scheduler set for daily runs at 03:00 AM and 03:00 PM
+2025-05-27 14:45:01,836 - Envisage_Scheduler - INFO - Starting scheduled task sequence
+2025-05-27 14:45:01,928 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\worker_thread.py
+2025-05-27 16:05:24,345 - Envisage_Scheduler - INFO - Script output summary: this is thhe log_path logs\web_scrapper_2025_05_27_log.txt
+this is thhe log_path logs\web_scrapper_2025_05_27_14_45_08_log.txt
+this is thhe log_path logs\hugging_face_api_20250527_144537.log
+this is thhe log_path logs\gemini_2025_05_27_14_45_39_log.txt
+this is thhe log_path logs\log_2025_05_27_threading.txt
+News not present 0
+Starting OpenAI Assistant
+Using time constraint: morning to now (2025-05-27 06:00 to 2025-05-27 14:45)
+Checking time constraints for https://www.vogue.in/content/how-to-pro...
+2025-05-27 16:05:24,429 - Envisage_Scheduler - INFO - Successfully completed: worker_thread.py
+2025-05-27 16:05:24,584 - Envisage_Scheduler - INFO - worker_thread.py completed successfully, proceeding to envisage_web_ct_ctr.py
+2025-05-27 16:05:24,622 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\envisage_web_ct_ctr.py
+2025-05-27 16:05:35,522 - Envisage_Scheduler - INFO - Script output summary: this is thhe log_path logs\envisage_web_2025_05_27_16_05_29_log.txt
+Processing current date with time constraint: 2025-05-27_18:00
+DEBUG: Processing date: 2025-05-27_18:00
+DEBUG: Fetching summary for date: 2025-05-27_18:00
+DEBUG: MongoDB query: {'Summary.2025-05-27_18:00': {'$exists': True}}
+DEBUG: Detected nested date structure, extracting inner content
+DEBUG: Successfully fetched and transformed summary for date: 2025-05-27_18:00
+DEBUG: Storing web data for date: 2025-05-27_18:00
+DEBUG: Docume...
+2025-05-27 16:05:35,522 - Envisage_Scheduler - INFO - Successfully completed: envisage_web_ct_ctr.py
+2025-05-27 16:05:35,578 - Envisage_Scheduler - INFO - envisage_web_ct_ctr.py completed successfully, proceeding to web_scrapper_thumbnail.py
+2025-05-27 16:05:35,578 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail.py
+2025-05-27 17:03:56,207 - Envisage_Scheduler - INFO - Script output summary: Testing internet connectivity...
+Internet connection test: 200
+Testing Unsplash connectivity...
+Unsplash connection test: 403
+WARNING: Unsplash returned non-200 status code. May have rate limiting issues.
+AIzaSyAC_PZyeCxpVyVsIKAGOGrTDT5ko3Kpvh0  GEMINI_API_KEY
+[WEB_SCRAPER][INF][16:05:39] Date with time constraint: 2025-05-27_18:00
+[WEB_SCRAPER][INF][16:05:39] Initialized with date constraint: 2025-05-27_18:00
+Processing current date with time constraint: 2025-05-27_18:00
+[WEB_SCRAPER][INF][16:0...
+2025-05-27 17:03:56,272 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail.py
+2025-05-27 17:03:56,289 - Envisage_Scheduler - INFO - web_scrapper_thumbnail.py completed successfully, proceeding to web_scrapper_thumbnail_push.py
+2025-05-27 17:03:56,289 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail_push.py --push
+2025-05-27 17:11:50,496 - Envisage_Scheduler - INFO - Script output summary: Successfully imported MongoDB connection.
+--- Push flag enabled ---
+--- Starting Upload from 'thumbnail_images/2025-05-27_1800' ---
+Connected to bucket: envisagewebmeta
+Using GCS top-level folder: 2025-05-27_18:00
+Scanning directory: thumbnail_images/2025-05-27_1800
+Processing category: 10_Lifestyle
+Uploading thumbnail_images/2025-05-27_1800\10_Lifestyle\lifestyle_1.jpg to gs://envisagewebmeta/2025-05-27_18:00/10_Lifestyle/lifestyle_1.jpg...
+Successfully uploaded lifestyle_1.jpg
+Uploading thumbn...
+2025-05-27 17:11:50,496 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail_push.py
+2025-05-27 17:11:50,496 - Envisage_Scheduler - INFO - web_scrapper_thumbnail_push.py --push completed successfully, proceeding to update database
+2025-05-27 17:11:50,496 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail_push.py --update-db
+2025-05-27 17:12:00,643 - Envisage_Scheduler - INFO - Script output summary: Successfully imported MongoDB connection.
+
+--- Update DB flag enabled ---
+Starting MongoDB update process for date: 2025-05-27_18:00
+Connected to bucket: envisagewebmeta for retrieving URLs.
+Listing blobs with prefix: gs://envisagewebmeta/2025-05-27_18:00/
+Found URL: https://storage.googleapis.com/envisagewebmeta/2025-05-27_18%3A00/10_Lifestyle/lifestyle_1.jpg for category 10_Lifestyle
+Found URL: https://storage.googleapis.com/envisagewebmeta/2025-05-27_18%3A00/10_Lifestyle/lifestyle_10.jpg for ...
+2025-05-27 17:12:00,643 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail_push.py
+2025-05-27 17:12:00,643 - Envisage_Scheduler - INFO - web_scrapper_thumbnail_push.py --update-db completed successfully. Full sequence complete!
+2025-05-28 02:45:03,225 - Envisage_Scheduler - INFO - Starting scheduled task sequence
+2025-05-28 02:45:03,225 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\worker_thread.py
+2025-05-28 03:45:48,611 - Envisage_Scheduler - INFO - Script output summary: this is thhe log_path logs\web_scrapper_2025_05_28_log.txt
+this is thhe log_path logs\web_scrapper_2025_05_28_02_45_05_log.txt
+this is thhe log_path logs\hugging_face_api_20250528_024520.log
+this is thhe log_path logs\gemini_2025_05_28_02_45_21_log.txt
+this is thhe log_path logs\log_2025_05_28_threading.txt
+News not present 0
+Starting OpenAI Assistant
+Using time constraint: evening to now (2025-05-27 18:00 to 2025-05-28 06:00)
+Checking time constraints for https://www.indiatoday.in/world/uk-news...
+2025-05-28 03:45:48,627 - Envisage_Scheduler - INFO - Successfully completed: worker_thread.py
+2025-05-28 03:45:48,627 - Envisage_Scheduler - INFO - worker_thread.py completed successfully, proceeding to envisage_web_ct_ctr.py
+2025-05-28 03:45:48,627 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\envisage_web_ct_ctr.py
+2025-05-28 03:45:53,908 - Envisage_Scheduler - INFO - Script output summary: this is thhe log_path logs\envisage_web_2025_05_28_03_45_52_log.txt
+Processing current date with time constraint: 2025-05-28_06:00
+DEBUG: Processing date: 2025-05-28_06:00
+DEBUG: Fetching summary for date: 2025-05-28_06:00
+DEBUG: MongoDB query: {'Summary.2025-05-28_06:00': {'$exists': True}}
+DEBUG: Detected nested date structure, extracting inner content
+DEBUG: Successfully fetched and transformed summary for date: 2025-05-28_06:00
+DEBUG: Storing web data for date: 2025-05-28_06:00
+DEBUG: Docume...
+2025-05-28 03:45:53,908 - Envisage_Scheduler - INFO - Successfully completed: envisage_web_ct_ctr.py
+2025-05-28 03:45:53,908 - Envisage_Scheduler - INFO - envisage_web_ct_ctr.py completed successfully, proceeding to web_scrapper_thumbnail.py
+2025-05-28 03:45:53,908 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail.py
+2025-05-28 04:45:08,370 - Envisage_Scheduler - INFO - Script output summary: Testing internet connectivity...
+Internet connection test: 200
+Testing Unsplash connectivity...
+Unsplash connection test: 403
+WARNING: Unsplash returned non-200 status code. May have rate limiting issues.
+AIzaSyAC_PZyeCxpVyVsIKAGOGrTDT5ko3Kpvh0  GEMINI_API_KEY
+[WEB_SCRAPER][INF][03:45:56] Date with time constraint: 2025-05-28_06:00
+[WEB_SCRAPER][INF][03:45:56] Initialized with date constraint: 2025-05-28_06:00
+Processing current date with time constraint: 2025-05-28_06:00
+[WEB_SCRAPER][INF][03:4...
+2025-05-28 04:45:08,370 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail.py
+2025-05-28 04:45:08,374 - Envisage_Scheduler - INFO - web_scrapper_thumbnail.py completed successfully, proceeding to web_scrapper_thumbnail_push.py
+2025-05-28 04:45:08,374 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail_push.py --push
+2025-05-28 04:53:26,061 - Envisage_Scheduler - INFO - Script output summary: Successfully imported MongoDB connection.
+--- Push flag enabled ---
+--- Starting Upload from 'thumbnail_images/2025-05-28_0600' ---
+Connected to bucket: envisagewebmeta
+Using GCS top-level folder: 2025-05-28_06:00
+Scanning directory: thumbnail_images/2025-05-28_0600
+Processing category: 10_Health
+Uploading thumbnail_images/2025-05-28_0600\10_Health\health_1.jpg to gs://envisagewebmeta/2025-05-28_06:00/10_Health/health_1.jpg...
+Successfully uploaded health_1.jpg
+Uploading thumbnail_images/2025-05...
+2025-05-28 04:53:26,061 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail_push.py
+2025-05-28 04:53:26,062 - Envisage_Scheduler - INFO - web_scrapper_thumbnail_push.py --push completed successfully, proceeding to update database
+2025-05-28 04:53:26,062 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail_push.py --update-db
+2025-05-28 04:53:30,479 - Envisage_Scheduler - INFO - Script output summary: Successfully imported MongoDB connection.
+
+--- Update DB flag enabled ---
+Starting MongoDB update process for date: 2025-05-28_06:00
+Connected to bucket: envisagewebmeta for retrieving URLs.
+Listing blobs with prefix: gs://envisagewebmeta/2025-05-28_06:00/
+Found URL: https://storage.googleapis.com/envisagewebmeta/2025-05-28_06%3A00/10_Health/health_1.jpg for category 10_Health
+Found URL: https://storage.googleapis.com/envisagewebmeta/2025-05-28_06%3A00/10_Health/health_10.jpg for category 10_Hea...
+2025-05-28 04:53:30,479 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail_push.py
+2025-05-28 04:53:30,479 - Envisage_Scheduler - INFO - web_scrapper_thumbnail_push.py --update-db completed successfully. Full sequence complete!
+2025-05-28 14:45:30,949 - Envisage_Scheduler - INFO - Starting scheduled task sequence
+2025-05-28 14:45:30,949 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\worker_thread.py
+2025-05-28 16:02:27,137 - Envisage_Scheduler - INFO - Script output summary: this is thhe log_path logs\web_scrapper_2025_05_28_log.txt
+this is thhe log_path logs\web_scrapper_2025_05_28_14_45_34_log.txt
+this is thhe log_path logs\hugging_face_api_20250528_144600.log
+this is thhe log_path logs\gemini_2025_05_28_14_46_03_log.txt
+this is thhe log_path logs\log_2025_05_28_threading.txt
+News not present 0
+Starting OpenAI Assistant
+Using time constraint: morning to now (2025-05-28 06:00 to 2025-05-28 14:46)
+Checking time constraints for https://www.moneycontrol.com/explainers...
+2025-05-28 16:02:27,137 - Envisage_Scheduler - INFO - Successfully completed: worker_thread.py
+2025-05-28 16:02:27,137 - Envisage_Scheduler - INFO - worker_thread.py completed successfully, proceeding to envisage_web_ct_ctr.py
+2025-05-28 16:02:27,137 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\envisage_web_ct_ctr.py
+2025-05-28 16:02:29,303 - Envisage_Scheduler - INFO - Script output summary: this is thhe log_path logs\envisage_web_2025_05_28_16_02_28_log.txt
+Processing current date with time constraint: 2025-05-28_18:00
+DEBUG: Processing date: 2025-05-28_18:00
+DEBUG: Fetching summary for date: 2025-05-28_18:00
+DEBUG: MongoDB query: {'Summary.2025-05-28_18:00': {'$exists': True}}
+DEBUG: Detected nested date structure, extracting inner content
+DEBUG: Successfully fetched and transformed summary for date: 2025-05-28_18:00
+DEBUG: Storing web data for date: 2025-05-28_18:00
+DEBUG: Docume...
+2025-05-28 16:02:29,303 - Envisage_Scheduler - INFO - Successfully completed: envisage_web_ct_ctr.py
+2025-05-28 16:02:29,303 - Envisage_Scheduler - INFO - envisage_web_ct_ctr.py completed successfully, proceeding to web_scrapper_thumbnail.py
+2025-05-28 16:02:29,303 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail.py
+2025-05-28 17:04:16,791 - Envisage_Scheduler - INFO - Script output summary: Testing internet connectivity...
+Internet connection test: 200
+Testing Unsplash connectivity...
+Unsplash connection test: 403
+WARNING: Unsplash returned non-200 status code. May have rate limiting issues.
+AIzaSyAC_PZyeCxpVyVsIKAGOGrTDT5ko3Kpvh0  GEMINI_API_KEY
+[WEB_SCRAPER][INF][16:02:32] Date with time constraint: 2025-05-28_18:00
+[WEB_SCRAPER][INF][16:02:32] Initialized with date constraint: 2025-05-28_18:00
+Processing current date with time constraint: 2025-05-28_18:00
+[WEB_SCRAPER][INF][16:0...
+2025-05-28 17:04:16,791 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail.py
+2025-05-28 17:04:16,791 - Envisage_Scheduler - INFO - web_scrapper_thumbnail.py completed successfully, proceeding to web_scrapper_thumbnail_push.py
+2025-05-28 17:04:16,791 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail_push.py --push
+2025-05-28 17:13:06,075 - Envisage_Scheduler - INFO - Script output summary: Successfully imported MongoDB connection.
+--- Push flag enabled ---
+--- Starting Upload from 'thumbnail_images/2025-05-28_1800' ---
+Connected to bucket: envisagewebmeta
+Using GCS top-level folder: 2025-05-28_18:00
+Scanning directory: thumbnail_images/2025-05-28_1800
+Processing category: 10_Education
+Uploading thumbnail_images/2025-05-28_1800\10_Education\education_1.jpg to gs://envisagewebmeta/2025-05-28_18:00/10_Education/education_1.jpg...
+Successfully uploaded education_1.jpg
+Uploading thumbn...
+2025-05-28 17:13:06,075 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail_push.py
+2025-05-28 17:13:06,075 - Envisage_Scheduler - INFO - web_scrapper_thumbnail_push.py --push completed successfully, proceeding to update database
+2025-05-28 17:13:06,075 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail_push.py --update-db
+2025-05-28 17:13:10,266 - Envisage_Scheduler - INFO - Script output summary: Successfully imported MongoDB connection.
+
+--- Update DB flag enabled ---
+Starting MongoDB update process for date: 2025-05-28_18:00
+Connected to bucket: envisagewebmeta for retrieving URLs.
+Listing blobs with prefix: gs://envisagewebmeta/2025-05-28_18:00/
+Found URL: https://storage.googleapis.com/envisagewebmeta/2025-05-28_18%3A00/10_Education/education_1.jpg for category 10_Education
+Found URL: https://storage.googleapis.com/envisagewebmeta/2025-05-28_18%3A00/10_Education/education_10.jpg for ...
+2025-05-28 17:13:10,282 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail_push.py
+2025-05-28 17:13:10,282 - Envisage_Scheduler - INFO - web_scrapper_thumbnail_push.py --update-db completed successfully. Full sequence complete!
+2025-05-29 02:45:10,696 - Envisage_Scheduler - INFO - Starting scheduled task sequence
+2025-05-29 02:45:10,696 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\worker_thread.py
+2025-05-29 04:58:27,413 - Envisage_Scheduler - INFO - Script output summary: this is thhe log_path logs\web_scrapper_2025_05_29_log.txt
+this is thhe log_path logs\web_scrapper_2025_05_29_02_45_16_log.txt
+this is thhe log_path logs\hugging_face_api_20250529_024544.log
+this is thhe log_path logs\gemini_2025_05_29_02_45_46_log.txt
+this is thhe log_path logs\log_2025_05_29_threading.txt
+News not present 0
+Starting OpenAI Assistant
+Using time constraint: evening to now (2025-05-28 18:00 to 2025-05-29 06:00)
+Checking time constraints for https://twitter.com/The_Hindu
+Using tim...
+2025-05-29 04:58:27,721 - Envisage_Scheduler - INFO - Successfully completed: worker_thread.py
+2025-05-29 04:58:27,722 - Envisage_Scheduler - INFO - worker_thread.py completed successfully, proceeding to envisage_web_ct_ctr.py
+2025-05-29 04:58:27,735 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\envisage_web_ct_ctr.py
+2025-05-29 04:58:30,032 - Envisage_Scheduler - INFO - Script output summary: this is thhe log_path logs\envisage_web_2025_05_29_04_58_28_log.txt
+Processing current date with time constraint: 2025-05-29_06:00
+DEBUG: Processing date: 2025-05-29_06:00
+DEBUG: Fetching summary for date: 2025-05-29_06:00
+DEBUG: MongoDB query: {'Summary.2025-05-29_06:00': {'$exists': True}}
+DEBUG: Detected nested date structure, extracting inner content
+DEBUG: Successfully fetched and transformed summary for date: 2025-05-29_06:00
+DEBUG: Storing web data for date: 2025-05-29_06:00
+DEBUG: Docume...
+2025-05-29 04:58:30,033 - Envisage_Scheduler - INFO - Successfully completed: envisage_web_ct_ctr.py
+2025-05-29 04:58:30,119 - Envisage_Scheduler - INFO - envisage_web_ct_ctr.py completed successfully, proceeding to web_scrapper_thumbnail.py
+2025-05-29 04:58:30,166 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail.py
+2025-05-29 06:08:13,194 - Envisage_Scheduler - INFO - Script output summary: Testing internet connectivity...
+Internet connection test: 200
+Testing Unsplash connectivity...
+Unsplash connection test: 403
+WARNING: Unsplash returned non-200 status code. May have rate limiting issues.
+AIzaSyAC_PZyeCxpVyVsIKAGOGrTDT5ko3Kpvh0  GEMINI_API_KEY
+[WEB_SCRAPER][INF][04:58:32] Date with time constraint: 2025-05-29_06:00
+[WEB_SCRAPER][INF][04:58:33] Initialized with date constraint: 2025-05-29_06:00
+Processing current date with time constraint: 2025-05-29_06:00
+[WEB_SCRAPER][INF][04:5...
+2025-05-29 06:08:13,196 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail.py
+2025-05-29 06:08:13,196 - Envisage_Scheduler - INFO - web_scrapper_thumbnail.py completed successfully, proceeding to web_scrapper_thumbnail_push.py
+2025-05-29 06:08:13,241 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail_push.py --push
+2025-05-29 06:08:15,039 - Envisage_Scheduler - INFO - Script output: Successfully imported MongoDB connection.
+--- Push flag enabled ---
+Error: Local directory 'thumbnail_images/2025-05-29_1800' does not exist.
+Please ensure the thumbnail scraper has run and created this directory, or provide the correct path using --dir.
+
+2025-05-29 06:08:15,039 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail_push.py
+2025-05-29 06:08:15,039 - Envisage_Scheduler - INFO - web_scrapper_thumbnail_push.py --push completed successfully, proceeding to update database
+2025-05-29 06:08:15,039 - Envisage_Scheduler - INFO - Starting: C:\Users\hkd27\Documents\Personal\Envisage v0.0\venv\Scripts\python.exe C:\Users\hkd27\Documents\Personal\Envisage v0.0\envisage\starter_template\model_api\web_scrapper_thumbnail_push.py --update-db
+2025-05-29 06:08:17,195 - Envisage_Scheduler - INFO - Script output: Successfully imported MongoDB connection.
+
+--- Update DB flag enabled ---
+Starting MongoDB update process for date: 2025-05-29_18:00
+Connected to bucket: envisagewebmeta for retrieving URLs.
+Listing blobs with prefix: gs://envisagewebmeta/2025-05-29_18:00/
+No blobs found matching prefix: 2025-05-29_18:00/
+No image URLs found in GCS for 2025-05-29_18:00. Nothing to update in DB.
+--- Finished DB Update Process ---
+
+2025-05-29 06:08:17,211 - Envisage_Scheduler - INFO - Successfully completed: web_scrapper_thumbnail_push.py
+2025-05-29 06:08:17,211 - Envisage_Scheduler - INFO - web_scrapper_thumbnail_push.py --update-db completed successfully. Full sequence complete!

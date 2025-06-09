@@ -87,7 +87,7 @@ class DistilBertProcessor:
         return ' '.join(word for word in url.split() if len(word) > 1)
 
 def check_url_content_relevance(dataset: Dict[str, Dict[str, Union[List[str], str]]], 
-                              threshold: float = 0.4) -> Dict[str, Dict[str, int]]:
+                              threshold: float = 0.7) -> Dict[str, Dict[str, int]]:
     """
     Check relevance between article URLs and their content using DistilBERT.
     
@@ -262,12 +262,14 @@ def categorize_content(dataset: Dict[str, Dict[str, Union[List[str], str]]],
                         best_category = category
                 
                 # Add article to best matching category
-                if best_category:
+                if best_similarity > 0.5:  # Only categorize if similarity exceeds threshold
                     if base_url not in categorized_results[best_category]:
                         categorized_results[best_category][base_url] = {}
                     
                     categorized_results[best_category][base_url][article_url] = content_data
                     log_message(f"Article {article_url} categorized as '{best_category}' with similarity {best_similarity:.4f}")
+                else:
+                    log_message(f"Article {article_url} not categorized (best similarity {best_similarity:.4f} below threshold)")
                 
             except Exception as e:
                 log_message(f"Error categorizing article {article_url}: {str(e)}")
