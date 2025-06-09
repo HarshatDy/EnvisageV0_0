@@ -1,44 +1,94 @@
-# SummariseMe Project README
+**1. Project Title:**
 
-## Overview
+- SummariseMe
+
+**2. Executive Summary/Project Overview:**
+
 SummariseMe is an automated, modular pipeline for news aggregation, summarization, and image enrichment. It fetches news from multiple sources, summarizes and categorizes content using advanced AI models (Google Gemini, OpenAI, DistilBert AI Model), and enriches news items with relevant images via web scraping and cloud APIs. The system is designed for robust, scheduled operation, storing results in MongoDB and Google Cloud Storage, and is extensible for future enhancements.
 
-## Purpose
-The project aims to address the overwhelming volume of online news by automating the end-to-end process of news aggregation, summarization, and enrichment. It provides concise, visually enhanced news digests for end users or downstream applications, improving user engagement and decision-making.
+**3. Problem Statement/Opportunity:**
 
-## Key Components
-1. **Scheduler (Envisage_Schedule.py)**: Orchestrates the entire pipeline, running a sequence of scripts at scheduled times (3:00 AM and 2:45 PM daily) or on demand.
-2. **Worker Thread (worker_thread.py)**: Initiates the news retrieval and summarization process using multi-threading and interfaces with the GeminiAPI.
-3. **Web Content Controller (envisage_web_ct_ctr.py)**: Transforms summarized news data for web presentation.
-4. **Thumbnail Scraper (web_scrapper_thumbnail.py)**: Enriches news categories with relevant images using multi-threading and thread pools.
-5. **Thumbnail Push & DB Update (web_scrapper_thumbnail_push.py)**: Uploads images to Google Cloud Storage and updates MongoDB with image URLs.
-6. **Gemini API Integration (gemini_api_test_time_based_scrapper_gemini.py)**: Central to news retrieval, categorization, and summarization.
-7. **Database Access (mongo.py, sql_connection.py)**: Manages connections to MongoDB and MySQL for data storage.
+- **Problem Statement:** The overwhelming volume of online news makes it difficult for users to stay informed efficiently. Manual curation and summarization for each category of news are time-consuming and error-prone.
+- **Opportunity:** Automate the end-to-end process of news aggregation, summarization, and enrichment, providing concise, visually enhanced news digests for end users or downstream applications.
+- **Background:** With the rise of information overload, there is a growing need for automated, reliable, and scalable news summarization and enrichment tools.
 
-## Setup Instructions
-1. **Environment Setup**:
-   - Ensure Python 3.6+ is installed.
-   - Install required packages using `pip install -r requirements.txt`.
-   - Set up environment variables for API keys, database credentials, and cloud configuration.
+**4. Project Goals and Objectives:**
 
-2. **Database Configuration**:
-   - Configure MongoDB and MySQL connections as per the `mongo.py` and `sql_connection.py` files.
+- **Goals:**
+  - Deliver a fully automated, end-to-end news aggregation and enrichment pipeline.
+  - Ensure high reliability, scalability, and extensibility.
+- **Objectives (SMART):** # SMART stands for Specific, Measurable, Achievable, Relevant, Time-bound objectives
+  - Aggregate and summarize news from at least 20 sources daily with >95% uptime.
+  - Enrich 100% of news categories with relevant images.
+  - Complete daily pipeline runs within 1 hour.
+  - Achieve >90% accuracy in news categorization and summarization (as measured by manual review).
 
-3. **Cloud Storage Setup**:
-   - Set up Google Cloud Storage and configure the necessary credentials.
+**5. Scope:**
 
-4. **Running the Pipeline**:
-   - Execute the scheduler script: `python Envisage_Schedule.py`.
-   - For immediate execution, use the `--run-now` flag.
+- **In-Scope:**
+  - Automated news fetching, categorization, and summarization with AI Model (Tested : DistilBert).
+  - Image scraping and enrichment for news categories.
+  - Storage of results in MongoDB and Google Cloud Storage.
+  - Scheduled and on-demand pipeline execution.
+  - Direct end-user UI (focus is on backend pipeline) (Implemented frontend UI/UX in www.summariseme.in . Github Link (https://github.com/HarshatDy/Envisage_Web_App)).
+- **Out-of-Scope:**
+  - Manual news curation.
+  - Real-time news updates (pipeline is batch-based).
 
-## Usage
-- The pipeline runs automatically at scheduled times (3:00 AM and 2:45 PM daily).
-- Logs are generated for traceability and debugging.
-- Results are stored in MongoDB and Google Cloud Storage.
+**6. Key Deliverables:**
 
-## Extensibility
-- The modular design allows for easy extension and maintenance.
-- Each script is independently runnable and testable.
+- Automated news aggregation and summarization scripts with local AI models (DistilBert).
+- Image enrichment and cloud upload modules.
+- MongoDB and GCS integration for data storage.
+- Centralized logging and error handling.
+- Technical documentation and extensibility guidelines.
 
-## Conclusion
-SummariseMe is a robust, scalable, and extensible news aggregation and enrichment pipeline, leveraging advanced multi-threading, cloud APIs, and resilient scraping techniques. Its modular architecture allows for easy extension and maintenance, while its use of modern DSA and algorithms ensures efficiency and reliability at scale. 
+**7. Success Criteria/Key Performance Indicators (KPIs):**
+
+- >95% pipeline uptime.
+- >90% accuracy in news summarization and categorization.
+- 100% of news categories enriched with images.
+- Daily pipeline run time < 1 hour. (Limitation : CUDA Compiled Pytorch + Nvidia 1650 GTX )
+- All errors logged and recoverable without manual intervention.
+
+**8. Stakeholders:**
+
+- **Creator :** Harshat Dhanayat (www.harshatdy.in)
+
+**9. High-Level Timeline and Milestones:**
+
+- Project Start: [Feb 9]
+- Core pipeline implementation: 3 weeks
+- Integration with cloud storage: 2 week
+- Testing and validation: 4 week
+- Documentation : 2 week
+- Project End: [March 31]
+
+**10. High-Level Resource Requirements:**
+
+- **Budget:** Cloud compute (Hosted locally), storage (MongoDb : $0.20/hr), API usage costs (Monthly : ~500Rs)
+- **Technology/Equipment:** Python, MongoDB, Google Cloud Storage, Google Gemini API, OpenAI API, Hugging Face AI Models (DistilBert)
+
+
+**12. Constraints:**
+
+- Running Model on GPU (1650RTX CUDA Score: 7.5)
+- Pipeline must complete within 1 hour per run. (Linked to Constraint 1)
+
+**13. High-Level Risks and Mitigation Strategies:**
+
+- **Risk:** News sources block scraping. **Mitigation:** Use proxy rotation, user-agent spoofing, real-time https headers and API-based sources where possible.
+- **Risk:** API rate limits or outages. **Mitigation:** Implement retry logic and fallback strategies.
+- **Risk:** Model crossing time-limit threshold . **Mitigation:** Filter and adjust Model parameters 
+
+**14. Business Case/Justification:**
+
+SummariseMe addresses the growing challenge of information overload by automating the aggregation, summarization, and enrichment of news. It enables organizations to deliver concise, visually engaging news digests, improving user engagement and decision-making. The project aligns with strategic goals of automation, efficiency, and scalable content delivery.
+
+**Key Considerations for Top Companies:**
+
+- **Clarity and Conciseness:** Information is presented in a way that is easy to understand, avoiding jargon where possible.
+- **Data-Driven:** Objectives, problem statements, and success criteria are often backed by data.
+- **Alignment with Strategy:** The project's connection to broader business goals is clearly articulated.
+- **Living Document:** While foundational, parts of this document (especially around risks and timelines) may be revisited and updated as the project progresses, though changes to scope typically require formal change request processes.
+- **Communication Tool:** This document serves as a primary communication tool to ensure everyone involved has a shared understanding of the project.
